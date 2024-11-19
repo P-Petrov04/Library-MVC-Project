@@ -100,6 +100,12 @@ namespace Web.Data
                 new Role { Id = 2, Name = "Moderator" },
                 new Role { Id = 3, Name = "Member" }
             );
+
+            modelBuilder.Entity<User>().HasData(
+                new User {Id = 1, RoleId = 1, Name = "pPetrov04", Email= "stu2301321002@uni-plovdiv.bg", Password= "2301321002" },
+                new User { Id = 2, RoleId = 1, Name = "bMinkov05", Email = "stu2301321069@uni-plovdiv.bg", Password = "2301321069" },
+                new User { Id = 3, RoleId = 1, Name = "aKuznecov", Email = "stu2301321059@uni-plovdiv.bg", Password = "2301321059" }
+                );
         }
     }
 }
