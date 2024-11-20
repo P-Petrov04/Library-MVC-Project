@@ -1,5 +1,6 @@
-﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
-@inject Microsoft.AspNetCore.Identity.UserManager<Microsoft.AspNetCore.Identity.IdentityUser> UserManager
+﻿@model Web.ViewModels.Users.UserVM
+@inject Common.Repositories.BaseRepository<User> UsersRepo
+@inject Common.Repositories.BaseRepository<Role> RolesRepo
 
 @{
     ViewData["Title"] = "Admin Dashboard";
@@ -34,13 +35,13 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var user in Model)
+        @foreach (var user in Model.Items)
         {
-            var roles = await UserManager.GetRolesAsync(user);
+            List<string?> roles = RolesRepo.GetAll().Select(u => u.Name).ToList();
 
             <tr>
                 <td>@user.Email</td>
-                <td>@string.Join(", ", roles)</td>
+                <td>@user.Role.Name</td>
                 <td>
                     @if (!roles.Contains("Admin")) // Hide Delete Button for Admins
                     {

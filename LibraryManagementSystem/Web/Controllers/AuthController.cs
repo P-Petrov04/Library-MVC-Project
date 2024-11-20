@@ -1,84 +1,65 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Web.Data;
+using Common.Repositories;
+using Web.ViewModels.Auth;
+using Common.Entities;
+using System;
 
 namespace Web.Controllers
 {
     public class AuthController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly ApplicationDbContext _context;
-
-        public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ApplicationDbContext context)
-        {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _context = context;
-        }
 
         // GET: Login Page
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string url)
         {
             // Redirect if user is already logged in
             if (HttpContext.Session.GetString("UserEmail") != null)
             {
                 return RedirectToAction("Index", "Home");
             }
-
+            ViewData["url"] = url;
             return View();
         }
 
         // POST: Login User
         [HttpPost]
-        public async Task<IActionResult> Login(string email, string password)
+        public IActionResult Login(LoginVM model)
         {
-            var user = await _userManager.FindByEmailAsync(email);
-
-            if (user == null)
+            // Check if the user is already logged in (i.e., session contains loggedUserId)
+            if (HttpContext.Session.GetString("loggedUserId") != null)
             {
-                TempData["Error"] = "User does not exist.";
-                return View();
+                // If already logged in, redirect to Admin index page
+                return RedirectToAction("Index", "Admin");
             }
 
-            if (await _userManager.CheckPasswordAsync(user, password))
+            // Check if model state is valid
+            if (!ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(user, password, isPersistent: true, lockoutOnFailure: false);
-
-                if (result.Succeeded)
-                {
-                    var roles = await _userManager.GetRolesAsync(user);
-
-                    // Retrieve user's name from the `User` table in the database
-                    var dbUser = _context.User.FirstOrDefault(u => u.Email == email);
-
-                    if (dbUser != null)
-                    {
-                        HttpContext.Session.SetString("UserName", dbUser.Name); // Store name in session
-                        HttpContext.Session.SetString("UserEmail", email);
-                        HttpContext.Session.SetString("UserRole", roles.FirstOrDefault() ?? "User");
-                    }
-
-                    if (roles.Contains("Admin"))
-                    {
-                        return RedirectToAction("Index", "Admin");
-                    }
-                    else if (roles.Contains("Moderator"))
-                    {
-                        return RedirectToAction("Index", "Moderator");
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-                }
+                return View(model);
             }
 
-            TempData["Error"] = "Invalid login attempt.";
-            return View();
+            // Use your repository to get the user by email and password
+            BaseRepository<User> usersRepo = new BaseRepository<User>();
+            User loggedUser = usersRepo.FirstOrDefault(u =>
+                        u.Email == model.Email && u.Password == model.Password);
+
+            // If user not found, add error to ModelState and return view
+            if (loggedUser == null)
+            {
+                ModelState.AddModelError("authError", "Invalid login attempt.");
+                return View(model);
+            }
+
+            // Store user ID in session after successful login
+            this.HttpContext.Session.SetString("loggedUserId", loggedUser.Id.ToString());
+
+            // Redirect to Admin index page
+            return RedirectToAction("Index", "Admin");
         }
+
 
         // GET: Change Profile Page
         [Authorize(Roles = "Admin")]
@@ -93,7 +74,9 @@ namespace Web.Controllers
                 return RedirectToAction("Login");
             }
 
-            var dbUser = _context.User.FirstOrDefault(u => u.Email == email);
+            BaseRepository<User> usersRepo = new BaseRepository<User>();
+
+            var dbUser = usersRepo.FirstOrDefault(u => u.Email == email);
             if (dbUser == null)
             {
                 TempData["Error"] = "User not found.";
@@ -106,7 +89,7 @@ namespace Web.Controllers
         // POST: Change Profile
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> ChangeProfile(string name, string password, string confirmPassword)
+        public async Task<IActionResult> ChangeProfile(ChangeProfileVM model)
         {
             var email = HttpContext.Session.GetString("UserEmail");
 
@@ -116,7 +99,9 @@ namespace Web.Controllers
                 return RedirectToAction("Login");
             }
 
-            var dbUser = _context.User.FirstOrDefault(u => u.Email == email);
+            BaseRepository<User> usersRepo = new BaseRepository<User>();
+
+            var dbUser = usersRepo.FirstOrDefault(u => u.Email == email);
             if (dbUser == null)
             {
                 TempData["Error"] = "User not found.";
@@ -124,37 +109,25 @@ namespace Web.Controllers
             }
 
             // Update name
-            if (!string.IsNullOrWhiteSpace(name))
+            if (!string.IsNullOrWhiteSpace(model.Name))
             {
-                dbUser.Name = name;
-                HttpContext.Session.SetString("UserName", name);
+                dbUser.Name = model.Name;
+                HttpContext.Session.SetString("UserName", model.Name);
             }
 
             // Update password
-            if (!string.IsNullOrWhiteSpace(password))
+            if (!string.IsNullOrWhiteSpace(model.Password))
             {
-                if (password != confirmPassword)
+                if (model.Password != dbUser.Password)
                 {
                     TempData["Error"] = "Passwords do not match.";
                     return View(dbUser);
                 }
 
-                var identityUser = await _userManager.FindByEmailAsync(email);
-                if (identityUser != null)
-                {
-                    var resetToken = await _userManager.GeneratePasswordResetTokenAsync(identityUser);
-                    var passwordResult = await _userManager.ResetPasswordAsync(identityUser, resetToken, password);
-
-                    if (!passwordResult.Succeeded)
-                    {
-                        TempData["Error"] = string.Join(", ", passwordResult.Errors.Select(e => e.Description));
-                        return View(dbUser);
-                    }
-                }
+                dbUser.Password = model.Password;
             }
 
-            _context.User.Update(dbUser);
-            await _context.SaveChangesAsync();
+            usersRepo.Update(dbUser);
 
             TempData["Success"] = "Profile updated successfully.";
             return RedirectToAction("ChangeProfile");
@@ -163,8 +136,7 @@ namespace Web.Controllers
         // Logout User
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
-            HttpContext.Session.Clear(); // Clear all session data
+            this.HttpContext.Session.Remove("loggedUserId");
             return RedirectToAction("Login", "Auth");
         }
     }

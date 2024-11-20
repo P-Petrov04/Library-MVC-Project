@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
-using Web.Data;
+using Common.Repositories;
 
-namespace Web.Data.Migrations
+namespace Common.Migrations
 {
 	[DbContext(typeof(ApplicationDbContext))]
 	[Migration("00000000000000_CreateIdentitySchema")]

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Web.Data.Migrations
+namespace Common.Migrations
 {
     public partial class AddAdminUsers : Migration
     {

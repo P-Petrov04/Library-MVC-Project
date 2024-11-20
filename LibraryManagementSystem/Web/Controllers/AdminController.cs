@@ -1,27 +1,26 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Common.Entities;
+using Common.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Web.ViewModels.Users;
 
 namespace Web.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-
-        public AdminController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
-        {
-            _userManager = userManager;
-            _roleManager = roleManager;
-        }
+        //private readonly ApplicationDbContext _context;
 
         // GET: Admin Dashboard
         [HttpGet]
         public IActionResult Index()
         {
-            var users = _userManager.Users.ToList();
-            return View(users); // Pass list of users to the view
+            BaseRepository<User> usersRepo = new BaseRepository<User>();
+            UserVM model = new UserVM();
+            model.Items = usersRepo.GetAll();
+
+            return View(model); // Pass list of users to the view
         }
 
         // GET: Register User/Moderator Page
@@ -33,74 +32,49 @@ namespace Web.Controllers
 
         // POST: Register User/Moderator
         [HttpPost]
-        public async Task<IActionResult> RegisterUser(string name, string email, string password, string role)
+        public async Task<IActionResult> RegisterUser(RegisterUserVM model)
         {
+            if (ModelState.IsValid) 
+            { 
+                return View(model);
+            }
+
+            BaseRepository<User> usersRepo = new BaseRepository<User>();
+            BaseRepository<Role> rolesRepo = new BaseRepository<Role>();
+            User item = new User();
+
             // Ensure the role exists
-            if (!await _roleManager.RoleExistsAsync(role))
+            if (!model.Role.Equals("Admin") && !model.Role.Equals("Moderator") &&
+                !model.Role.Equals("Member"))
             {
-                TempData["Error"] = $"Role '{role}' does not exist.";
+                TempData["Error"] = $"Role '{model.Role}' does not exist.";
                 return RedirectToAction("RegisterUser");
             }
 
             // Create the user
-            var newUser = new IdentityUser
-            {
-                UserName = email,
-                Email = email,
-                EmailConfirmed = true
-            };
+            item.Email = model.Email;
+            item.Name = model.Name;
+            item.Password = model.Password;
+            Role currRole = rolesRepo.FirstOrDefault(r => r.Name == model.Role);
+            item.Role = currRole;
 
-            var result = await _userManager.CreateAsync(newUser, password);
-            if (result.Succeeded)
-            {
-                // Assign the role
-                await _userManager.AddToRoleAsync(newUser, role);
+            usersRepo.Add(item);
 
-                TempData["Success"] = $"{role} '{email}' successfully registered!";
-                return RedirectToAction("Index");
-            }
-
-            // Handle errors
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-
-            return View();
+            return RedirectToAction("Index");
         }
 
         // POST: Delete User
         [HttpPost]
-        public async Task<IActionResult> DeleteUser(string id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            BaseRepository<User> usersRepo = new BaseRepository<User>();
 
-            if (user == null)
-            {
-                TempData["Error"] = "User not found.";
-                return RedirectToAction("Index");
-            }
+            User item = usersRepo.FirstOrDefault(x => x.Id == id);
 
-            // Check if the user to be deleted is an Admin
-            var roles = await _userManager.GetRolesAsync(user);
-            if (roles.Contains("Admin"))
-            {
-                TempData["Error"] = "You cannot delete other Admins.";
-                return RedirectToAction("Index");
-            }
+            if(item != null)
+                usersRepo.Delete(item);
 
-            var result = await _userManager.DeleteAsync(user);
-
-            if (result.Succeeded)
-            {
-                TempData["Success"] = "User deleted successfully.";
-            }
-            else
-            {
-                TempData["Error"] = "Error deleting user.";
-            }
-
-            return RedirectToAction("Index");
+            return RedirectToAction("Action");
         }
     }
 }

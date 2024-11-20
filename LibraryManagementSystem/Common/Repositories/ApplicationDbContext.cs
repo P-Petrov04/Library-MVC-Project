@@ -1,15 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Common.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Web.Models;
 
-namespace Web.Data
+namespace Common.Repositories
 {
-	public class ApplicationDbContext : IdentityDbContext
+	public class ApplicationDbContext : DbContext
 	{
-		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-			: base(options)
-		{
-		}
 
         public DbSet<Publisher>? Publishers { get; set; }
         public DbSet<Author>? Authors { get; set; }
@@ -22,8 +18,6 @@ namespace Web.Data
         public DbSet<Tag>? Tags { get; set; }
         public DbSet<Category>? Categories { get; set; }
         public DbSet<BookCategory>? BookCategories { get; set; }
-
-
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -106,6 +100,10 @@ namespace Web.Data
                 new User { Id = 2, RoleId = 1, Name = "bMinkov", Email = "stu2301321069@uni-plovdiv.bg", Password = "2301321069" },
                 new User { Id = 3, RoleId = 1, Name = "aKuznecov", Email = "stu2301321059@uni-plovdiv.bg", Password = "2301321059" }
                 );
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Server=195.230.127.185; Database=db2301321002; User ID=stu2301321002; password=Petar2004petrov; MultipleActiveResultSets=true");
         }
     }
 }
