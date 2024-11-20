@@ -1,0 +1,33 @@
+﻿@model Web.Models.User
+
+@{
+    ViewData["Title"] = "Change Profile";
+}
+
+<h2>Change Profile</h2>
+
+@if (TempData["Success"] != null)
+{
+    <p class="text-success">@TempData["Success"]</p>
+}
+
+@if (TempData["Error"] != null)
+{
+    <p class="text-danger">@TempData["Error"]</p>
+}
+
+<form asp-action="ChangeProfile" method="post">
+    <div class="form-group">
+        <label asp-for="Name">Name</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="password">New Password</label>
+        <input type="password" name="Password" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" name="ConfirmPassword" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Update Profile</button>
+</form>
