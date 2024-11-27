@@ -1,0 +1,26 @@
+﻿@model Web.ViewModels.Categories.AddCategoryVM
+@inject Common.Repositories.BaseRepository<Category> CategoryRepo
+
+@{
+    ViewData["Title"] = "Add New Category";
+}
+
+<h2>Add New Category</h2>
+
+@if (TempData["Error"] != null)
+{
+    <p class="text-danger">@TempData["Error"]</p>
+}
+
+@if (TempData["Success"] != null)
+{
+    <p class="text-success">@TempData["Success"]</p>
+}
+
+<form asp-action="AddCategory" method="post">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>

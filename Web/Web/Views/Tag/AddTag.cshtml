@@ -1,0 +1,35 @@
+﻿@model Web.ViewModels.Tags.AddTagVM
+@inject Common.Repositories.BaseRepository<Category> CategoryRepo
+
+@{
+    ViewData["Title"] = "Add New Tag";
+}
+
+<h2>Add New Tag</h2>
+
+@if (TempData["Error"] != null)
+{
+    <p class="text-danger">@TempData["Error"]</p>
+}
+
+@if (TempData["Success"] != null)
+{
+    <p class="text-success">@TempData["Success"]</p>
+}
+
+<form asp-action="AddTag" method="post">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label for="role">Category</label>
+        <select id="category" name="category" class="form-control">
+            @foreach (var category in CategoryRepo.GetAll())
+            {
+                <option value="@category.Name">@category.Name</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>

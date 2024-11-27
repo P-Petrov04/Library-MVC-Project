@@ -1,0 +1,27 @@
+﻿@model Web.ViewModels.Categories.EditCategoryVM
+
+@{
+    ViewData["Title"] = "Edit Category";
+}
+
+<h2>Edit Category</h2>
+
+@if (TempData["Error"] != null)
+{
+    <p class="text-danger">@TempData["Error"]</p>
+}
+
+@if (TempData["Success"] != null)
+{
+    <p class="text-success">@TempData["Success"]</p>
+}
+
+<form asp-action="EditCategory" method="post">
+    <div class="form-group">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Edit</button>
+</form>
+

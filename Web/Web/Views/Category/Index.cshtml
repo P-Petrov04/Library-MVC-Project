@@ -1,0 +1,54 @@
+﻿@model Web.ViewModels.Categories.CategoryVM
+@inject Common.Repositories.BaseRepository<Category> CategoryRepo
+
+@{
+    ViewData["Title"] = "All Categories";
+}
+
+<h2>All Categories</h2>
+
+@if (TempData["Success"] != null)
+{
+    <p class="text-success">@TempData["Success"]</p>
+}
+
+@if (TempData["Error"] != null)
+{
+    <p class="text-danger">@TempData["Error"]</p>
+}
+
+<div class="mt-3">
+    <a asp-controller="Category" asp-action="AddCategory" class="btn btn-primary">
+        Add New AddCategory
+    </a>
+</div>
+
+<h4 class="mt-5">Manage Categories</h4>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in Model.Items)
+        {
+
+            <tr>
+                <td>@category.Name</td>
+                <td>
+                    <form asp-action="DeleteCategory" asp-controller="Category" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@category.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                    <form asp-action="EditCategory" asp-controller="Category" method="get" class="d-inline">
+                        <input type="hidden" name="id" value="@category.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">Edit</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
