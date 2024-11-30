@@ -1,7 +1,6 @@
 ﻿using Common.Entities;
 using Common.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Web.ViewModels.Categories;
 using Web.ViewModels.Tags;
 
 namespace Web.Controllers
@@ -105,7 +104,7 @@ namespace Web.Controllers
             if (!ModelState.IsValid)
             {
                 TempData["Error"] = "Please correct the errors.";
-                return View(model);
+                return RedirectToAction("EditTag", new { id = model.Id });
             }
 
             Tag tag = _tagRepo.FirstOrDefault(t => t.Id == model.Id);

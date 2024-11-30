@@ -2,7 +2,7 @@
 @inject Common.Repositories.BaseRepository<Category> CategoryRepo
 
 @{
-    ViewData["Title"] = "Add New Tag";
+    ViewData["Title"] = "Edit Tag";
 }
 
 <h2>Edit Tag</h2>
@@ -17,17 +17,24 @@
     <p class="text-success">@TempData["Success"]</p>
 }
 
-<form action="../Tag/EditTag" method="post">
+<form asp-action="EditTag" method="post">
     <div class="form-group">
         <label for="name">Name</label>
         <input type="text" id="name" name="Name" value="@Model.Name" class="form-control" />
     </div>
     <div class="form-group">
-        <label for="role">Category</label>
-        <select id="category" name="category" class="form-control">
+        <label for="category">Category</label>
+        <select id="category" name="CategoryId" class="form-control">
             @foreach (var category in CategoryRepo.GetAll())
             {
-                <option value="@category.Name">@category.Name</option>
+                @if (category.Id == Model.CategoryId)
+                {
+                    <option value="@category.Id" selected>@category.Name</option>
+                }
+                else
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
             }
         </select>
     </div>
