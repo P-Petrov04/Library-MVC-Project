@@ -42,7 +42,7 @@ namespace Web.Controllers
 
             Publisher publisher = new Publisher();
 
-            // Check if publisher already exists
+            
             if (_publisherRepo.FirstOrDefault(p => p.Name.Equals(model.Name)) != null)
             {
                 TempData["Error"] = $"The publisher '{model.Name}' already exists.";
