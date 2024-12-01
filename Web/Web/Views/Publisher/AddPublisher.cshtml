@@ -1,0 +1,14 @@
+﻿@model Web.ViewModels.Publishers.AddPublisherVM
+
+<h1>Add Publisher</h1>
+
+<form asp-action="AddPublisher" method="post">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

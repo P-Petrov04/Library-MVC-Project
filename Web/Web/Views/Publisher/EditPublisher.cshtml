@@ -1,0 +1,16 @@
+﻿@model Web.ViewModels.Publishers.EditPublisherVM
+
+<h1>Edit Publisher</h1>
+
+<form asp-action="EditPublisher" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

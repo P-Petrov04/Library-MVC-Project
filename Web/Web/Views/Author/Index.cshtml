@@ -1,0 +1,33 @@
+﻿@model Web.ViewModels.Authors.AuthorVM
+
+<h1>Authors</h1>
+
+<a asp-action="AddAuthor" class="btn btn-primary">Add New Author</a>
+
+<table class="table table-bordered mt-3">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var author in Model.Items)
+        {
+            <tr>
+                <td>@author.Id</td>
+                <td>@author.Name</td>
+                <td>
+                    <a asp-action="EditAuthor" asp-route-id="@author.Id" class="btn btn-warning">
+                        Edit
+                    </a>
+                    <form asp-action="DeleteAuthor" asp-route-id="@author.Id"
+                          method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

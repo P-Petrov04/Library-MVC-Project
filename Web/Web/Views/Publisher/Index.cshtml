@@ -1,0 +1,30 @@
+﻿@model Web.ViewModels.Publishers.PublisherVM
+
+<h1>Publishers</h1>
+
+<a asp-action="AddPublisher">Add New Publisher</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var publisher in Model.Items)
+        {
+            <tr>
+                <td>@publisher.Id</td>
+                <td>@publisher.Name</td>
+                <td>
+                    <a asp-action="EditPublisher" asp-route-id="@publisher.Id">Edit</a> |
+                    <form asp-action="DeletePublisher" asp-route-id="@publisher.Id" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
