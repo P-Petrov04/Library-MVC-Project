@@ -50,7 +50,8 @@ namespace Web.Controllers
             
             Author author = new Author
             {
-                Name = model.Name
+                Name = model.Name,
+                Bio = model.Bio
             };
 
             _authorRepo.Add(author);
@@ -85,7 +86,8 @@ namespace Web.Controllers
             EditAuthorVM model = new EditAuthorVM
             {
                 Id = author.Id,
-                Name = author.Name
+                Name = author.Name,
+                Bio = author.Bio
             };
 
             return View(model);
@@ -108,6 +110,7 @@ namespace Web.Controllers
             }
 
             author.Name = model.Name;
+            author.Bio = model.Bio;
             _authorRepo.Update(author);
 
             return RedirectToAction("Index");

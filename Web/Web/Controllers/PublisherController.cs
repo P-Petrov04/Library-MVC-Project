@@ -50,6 +50,7 @@ namespace Web.Controllers
             }
 
             publisher.Name = model.Name;
+            publisher.Address = model.Address;
 
             _publisherRepo.Add(publisher);
             return RedirectToAction("Index");
@@ -86,7 +87,8 @@ namespace Web.Controllers
             EditPublisherVM model = new EditPublisherVM()
             {
                 Id = publisher.Id,
-                Name = publisher.Name
+                Name = publisher.Name,
+                Address = publisher.Address
             };
 
             return View(model);
@@ -108,6 +110,7 @@ namespace Web.Controllers
             }
 
             publisher.Name = model.Name;
+            publisher.Address = model.Address;
             _publisherRepo.Update(publisher);
 
             return RedirectToAction("Index");

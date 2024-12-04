@@ -9,5 +9,8 @@ namespace Web.ViewModels.Authors
         [Required]
         public string Name { get; set; }
 
+        [Required]
+        public string? Bio { get; set; }
+
     }
 }

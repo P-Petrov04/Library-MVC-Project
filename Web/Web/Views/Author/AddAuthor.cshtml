@@ -2,18 +2,22 @@
 
 <h1>Add New Author</h1>
 
+@if (TempData["Error"] != null)
+{
+    <p class="text-danger">@TempData["Error"]</p>
+}
+
+@if (TempData["Success"] != null)
+{
+    <p class="text-success">@TempData["Success"]</p>
+}
+
 <form asp-action="AddAuthor" method="post">
     <div class="form-group">
-        <label for="Name">Name</label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" class="form-control" required />
+        <label for="name">Bio</label>
+        <input type="text" id="bio" name="bio" class="form-control" required />
     </div>
-    <button type="submit" class="btn btn-primary mt-3">Add Author</button>
-    <a asp-action="Index" class="btn btn-secondary mt-3">Cancel</a>
+    <button type="submit" class="btn btn-primary">Add</button>
 </form>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}

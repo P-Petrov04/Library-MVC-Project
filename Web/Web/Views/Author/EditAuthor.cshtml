@@ -2,19 +2,23 @@
 
 <h1>Edit Author</h1>
 
-<form asp-action="EditAuthor" method="post">
-    <input asp-for="Id" type="hidden" />
-    <div class="form-group">
-        <label for="Name">Name</label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
-    <a asp-action="Index" class="btn btn-secondary mt-3">Cancel</a>
-</form>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+@if (TempData["Error"] != null)
+{
+    <p class="text-danger">@TempData["Error"]</p>
 }
+
+@if (TempData["Success"] != null)
+{
+    <p class="text-success">@TempData["Success"]</p>
+}
+
+<form asp-action="EditAuthor" method="post">
+    <div class="form-group">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" value="@Model.Name" class="form-control" required />
+        <label for="name">Bio</label>
+        <input type="text" id="bio" name="bio" value="@Model.Bio" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Edit</button>
+</form>

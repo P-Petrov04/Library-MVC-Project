@@ -2,13 +2,22 @@
 
 <h1>Add Publisher</h1>
 
+@if (TempData["Error"] != null)
+{
+    <p class="text-danger">@TempData["Error"]</p>
+}
+
+@if (TempData["Success"] != null)
+{
+    <p class="text-success">@TempData["Success"]</p>
+}
+
 <form asp-action="AddPublisher" method="post">
     <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" class="form-control" required />
+        <label for="name">Address</label>
+        <input type="text" id="address" name="address" class="form-control" required />
     </div>
-
     <button type="submit" class="btn btn-primary">Add</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
