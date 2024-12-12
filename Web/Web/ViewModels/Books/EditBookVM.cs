@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http; // Required for file upload
 
 namespace Web.ViewModels.Books
 {
-    public class AddBookVM
+    public class EditBookVM
     {
+        public int Id { get; set; }
+
         [Required]
         public string Title { get; set; }
 
@@ -17,12 +18,12 @@ namespace Web.ViewModels.Books
         public int PublisherId { get; set; }
 
         [Required]
-        public List<int> AuthorIds { get; set; } 
-        [Required]
-        public List<int> CategoryIds { get; set; } 
+        public List<int> AuthorIds { get; set; }
 
         [Required]
-        public DateTime PublishedDate { get; set; } 
-        public IFormFile? CoverImage { get; set; } // For file upload (image)
+        public List<int> CategoryIds { get; set; }
+
+        public IFormFile? CoverImage { get; set; } 
+        public string? CoverImagePath { get; set; } 
     }
 }
