@@ -12,10 +12,15 @@ namespace Common.Entities
         [Required]
         [StringLength(20)]
         public string? ISBN { get; set; }
+
         public string? Summary { get; set; }
+
         public int PublisherId { get; set; }
+
         public DateTime PublishedDate { get; set; }
 
+        [StringLength(500)] 
+        public string? CoverImagePath { get; set; }
 
         public Publisher? Publisher { get; set; }
         public ICollection<BookAuthor>? BookAuthors { get; set; }

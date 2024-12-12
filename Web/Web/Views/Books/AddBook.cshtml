@@ -1,0 +1,66 @@
+﻿@model Web.ViewModels.Books.AddBookVM
+
+@{
+    ViewData["Title"] = "Add Book";
+}
+
+<h2>Add Book</h2>
+
+<form asp-action="AddBook" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="Title" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="isbn">ISBN</label>
+        <input type="text" id="isbn" name="ISBN" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="summary">Summary</label>
+        <textarea id="summary" name="Summary" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="publisher">Publisher</label>
+        <select id="publisher" name="PublisherId" class="form-control" required>
+            @foreach (var publisher in ViewBag.Publishers as List<Common.Entities.Publisher>)
+            {
+                <option value="@publisher.Id">@publisher.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="authors">Authors</label>
+        <select id="authors" name="AuthorIds" class="form-control" multiple required>
+            @foreach (var author in ViewBag.Authors as List<Common.Entities.Author>)
+            {
+                <option value="@author.Id">@author.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="categories">Categories</label>
+        <select id="categories" name="CategoryIds" class="form-control" multiple required>
+            @foreach (var category in ViewBag.Categories as List<Common.Entities.Category>)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="publishedDate">Published Date</label>
+        <input type="date" id="publishedDate" name="PublishedDate" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="coverImage">Cover Image</label>
+        <input type="file" id="coverImage" name="CoverImage" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>

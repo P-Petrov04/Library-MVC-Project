@@ -1,0 +1,88 @@
+﻿@model Web.ViewModels.Books.EditBookVM
+
+@{
+    ViewData["Title"] = "Edit Book";
+}
+
+<h2>Edit Book</h2>
+
+@if (TempData["Error"] != null)
+{
+    <p class="text-danger">@TempData["Error"]</p>
+}
+
+@if (TempData["Success"] != null)
+{
+    <p class="text-success">@TempData["Success"]</p>
+}
+
+<form asp-action="EditBook" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="Id" value="@Model.Id" />
+
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="Title" value="@Model.Title" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="isbn">ISBN</label>
+        <input type="text" id="isbn" name="ISBN" value="@Model.ISBN" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="summary">Summary</label>
+        <textarea id="summary" name="Summary" class="form-control">@Model.Summary</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="publisher">Publisher</label>
+        <select id="publisher" name="PublisherId" class="form-control" required>
+            @foreach (var publisher in ViewBag.Publishers as List<Common.Entities.Publisher>)
+            {
+                <option value="@publisher.Id"
+                        selected="@(publisher.Id == Model.PublisherId ? "selected" : "")">
+                    @publisher.Name
+                </option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="authors">Authors</label>
+        <div>
+            @foreach (var author in ViewBag.Authors as List<Common.Entities.Author>)
+            {
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="author-@author.Id" name="AuthorIds" value="@author.Id" 
+                           @(Model.AuthorIds.Contains(author.Id) ? "checked" : "") />
+                    <label class="form-check-label" for="author-@author.Id">@author.Name</label>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="categories">Categories</label>
+        <div>
+            @foreach (var category in ViewBag.Categories as List<Common.Entities.Category>)
+            {
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="category-@category.Id" name="CategoryIds" value="@category.Id" 
+                           @(Model.CategoryIds.Contains(category.Id) ? "checked" : "") />
+                    <label class="form-check-label" for="category-@category.Id">@category.Name</label>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="coverImage">Cover Image</label>
+        <input type="file" id="coverImage" name="CoverImage" class="form-control" />
+        @if (!string.IsNullOrEmpty(Model.CoverImagePath))
+        {
+            <p>Current Image: <img src="/images/@Model.CoverImagePath" alt="Cover Image" style="max-height: 100px;" /></p>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
