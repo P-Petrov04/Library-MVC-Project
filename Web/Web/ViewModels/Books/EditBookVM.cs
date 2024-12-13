@@ -24,6 +24,8 @@ namespace Web.ViewModels.Books
         public List<int> CategoryIds { get; set; }
 
         public IFormFile? CoverImage { get; set; } 
-        public string? CoverImagePath { get; set; } 
+        public string? CoverImagePath { get; set; }
+
+        public DateTime PublishedDate { get; set; }
     }
 }

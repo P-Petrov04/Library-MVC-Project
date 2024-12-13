@@ -1,0 +1,49 @@
+﻿@model List<Common.Entities.Book>
+
+@{
+    ViewData["Title"] = "All Books";
+}
+
+<div class="mt-3">
+    <a asp-controller="Book" asp-action="AddBook" class="btn btn-primary">
+        Add New Book
+    </a>
+</div>
+
+<h2>All Books</h2>
+
+@if (TempData["Success"] != null)
+{
+    <p class="text-success">@TempData["Success"]</p>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>ISBN</th>
+            <th>Publisher</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var book in Model)
+        {
+            <tr>
+                <td>@book.Title</td>
+                <td>@book.ISBN</td>
+                <td>@book.Publisher?.Name</td>
+                <td>
+                    <form asp-action="DeleteBook" asp-controller="Book" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@book.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                    <form asp-action="EditBook" asp-controller="Book" method="get" class="d-inline">
+                        <input type="hidden" name="id" value="@book.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">Edit</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

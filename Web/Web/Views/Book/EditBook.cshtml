@@ -37,12 +37,9 @@
     <div class="form-group">
         <label for="publisher">Publisher</label>
         <select id="publisher" name="PublisherId" class="form-control" required>
-            @foreach (var publisher in ViewBag.Publishers as List<Common.Entities.Publisher>)
+            @foreach (var publisher in ViewBag.Publishers)
             {
-                <option value="@publisher.Id"
-                        selected="@(publisher.Id == Model.PublisherId ? "selected" : "")">
-                    @publisher.Name
-                </option>
+                <option value="@publisher.Id">@publisher.Name</option>
             }
         </select>
     </div>
@@ -50,11 +47,10 @@
     <div class="form-group">
         <label for="authors">Authors</label>
         <div>
-            @foreach (var author in ViewBag.Authors as List<Common.Entities.Author>)
+            @foreach (var author in ViewBag.Authors)
             {
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="author-@author.Id" name="AuthorIds" value="@author.Id" 
-                           @(Model.AuthorIds.Contains(author.Id) ? "checked" : "") />
+                    <input type="checkbox" class="form-check-input" id="author-@author.Id" name="AuthorIds" value="@author.Id" @(Model.AuthorIds.Contains(author.Id) ? "checked" : "") />
                     <label class="form-check-label" for="author-@author.Id">@author.Name</label>
                 </div>
             }
@@ -67,8 +63,7 @@
             @foreach (var category in ViewBag.Categories as List<Common.Entities.Category>)
             {
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="category-@category.Id" name="CategoryIds" value="@category.Id" 
-                           @(Model.CategoryIds.Contains(category.Id) ? "checked" : "") />
+                    <input type="checkbox" class="form-check-input" id="category-@category.Id" name="CategoryIds" value="@category.Id" @(Model.CategoryIds.Contains(category.Id) ? "checked" : "") />
                     <label class="form-check-label" for="category-@category.Id">@category.Name</label>
                 </div>
             }
@@ -76,13 +71,14 @@
     </div>
 
     <div class="form-group">
+        <label for="publishedDate">Published Date</label>
+        <input type="date" id="publishedDate" name="PublishedDate" class="form-control"
+               value="@(Model.PublishedDate.ToString("yyyy-MM-dd"))" />
+    </div>
+
+
         <label for="coverImage">Cover Image</label>
         <input type="file" id="coverImage" name="CoverImage" class="form-control" />
-        @if (!string.IsNullOrEmpty(Model.CoverImagePath))
-        {
-            <p>Current Image: <img src="/images/@Model.CoverImagePath" alt="Cover Image" style="max-height: 100px;" /></p>
-        }
-    </div>
 
     <button type="submit" class="btn btn-primary">Save Changes</button>
 </form>

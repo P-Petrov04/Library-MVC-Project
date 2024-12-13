@@ -58,6 +58,7 @@ namespace Web
             app.UseAuthentication();
             app.UseAuthorization();
 
+
             // Map routes
             app.MapControllerRoute(
                 name: "default",
