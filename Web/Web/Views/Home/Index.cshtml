@@ -9,21 +9,23 @@
         {
             <div class="col-md-3 mb-4">
                 <div class="card h-100">
-                    @if (!string.IsNullOrEmpty(book.CoverImagePath))
-                    {
-                        <img src="~/images/@book.CoverImagePath" class="card-img-top" alt="Book Cover" />
-                    }
-                    else
-                    {
-                        <img src="~/images/default.png" class="card-img-top" alt="Default Cover" />
-                    }
-                    <div class="card-body text-center">
-                        <h5 class="card-title">@book.Title</h5>
-                        <p class="card-text">
-                            <strong>Authors:</strong>
-                            @string.Join(", ", book.Authors)
-                        </p>
-                    </div>
+                    <a href="@Url.Action("Details", "Home", new { id = book.Id })">
+                        @if (!string.IsNullOrEmpty(book.CoverImagePath))
+                        {
+                            <img src="~/images/@book.CoverImagePath" class="card-img-top" alt="Book Cover" />
+                        }
+                        else
+                        {
+                            <img src="~/images/default.png" class="card-img-top" alt="Default Cover" />
+                        }
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@book.Title</h5>
+                            <p class="card-text">
+                                <strong>Authors:</strong>
+                                @string.Join(", ", book.Authors)
+                            </p>
+                        </div>
+                    </a>
                 </div>
             </div>
         }

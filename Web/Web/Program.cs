@@ -58,6 +58,12 @@ namespace Web
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseEndpoints(endpoints => 
+            { 
+                endpoints.MapControllerRoute(
+                    name: "default", 
+                    pattern: "{controller=Home}/{action=Index}/{id?}"); 
+            });
 
             // Map routes
             app.MapControllerRoute(
