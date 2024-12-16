@@ -1,21 +1,41 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Common.Entities;
+using Common.Repositories;
 
 namespace Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly BaseRepository<Book> _bookRepo;
+        private readonly BaseRepository<Author> _authorRepo;
+        private readonly BaseRepository<BookAuthor> _bookAuthorRepo;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(BaseRepository<Book> bookRepo,
+                              BaseRepository<Author> authorRepo,
+                              BaseRepository<BookAuthor> bookAuthorRepo)
         {
-            _logger = logger;
+            _bookRepo = bookRepo;
+            _authorRepo = authorRepo;
+            _bookAuthorRepo = bookAuthorRepo;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var books = _bookRepo.GetAll().Select(book => new
+            {
+                book.Title,
+                book.CoverImagePath,
+                Authors = _bookAuthorRepo.GetAll()
+                    .Where(ba => ba.BookId == book.Id)
+                    .Join(_authorRepo.GetAll(),
+                          ba => ba.AuthorId,
+                          a => a.Id,
+                          (ba, a) => a.Name)
+                    .ToList()
+            }).ToList();
+
+            return View(books);
         }
 
         public IActionResult Privacy()
