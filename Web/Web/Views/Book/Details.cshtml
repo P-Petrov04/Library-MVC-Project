@@ -1,0 +1,74 @@
+﻿@model dynamic
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div id="book-details" class="container mt-5">
+    <!-- Flex Container for Image and Details -->
+    <div class="details-container">
+        <!-- Book Cover Section -->
+        <div class="book-details-card">
+            @if (!string.IsNullOrEmpty(Model.CoverImagePath))
+            {
+                <img src="~/images/@Model.CoverImagePath" class="book-details-img" alt="Book Cover" />
+            }
+            else
+            {
+                <img src="~/images/default.png" class="book-details-img" alt="Default Cover" />
+            }
+        </div>
+
+        <!-- Book Details Section -->
+        <div class="book-details-info">
+            <h1 class="details-title">@Model.Title</h1>
+            <hr />
+
+            <div class="details-meta mb-3">
+                <strong>Book ID:</strong> @Model.Id
+            </div>
+            <div class="details-meta mb-3">
+                <strong>Authors:</strong>
+                @if (Model.Authors != null && Model.Authors.Count > 0)
+                {
+                    @string.Join(", ", Model.Authors)
+                }
+                else
+                {
+                    <span>No authors available</span>
+                }
+            </div>
+            <div class="details-meta mb-3">
+                <strong>Categories:</strong>
+                @if (Model.Categories != null && Model.Categories.Count > 0)
+                {
+                    @string.Join(", ", Model.Categories)
+                }
+                else
+                {
+                    <span>No categories available</span>
+                }
+            </div>
+            <div class="details-summary mt-4">
+                <h5>Summary</h5>
+                <p>
+                    @if (!string.IsNullOrEmpty(Model.Summary))
+                    {
+                        @Model.Summary
+                    }
+                    else
+                    {
+                        <span>No summary available for this book.</span>
+                    }
+                </p>
+            </div>
+
+            <!-- Back Button -->
+            <div class="mt-4">
+                <a href="@Url.Action("Books", "Book")" class="btn btn-outline-primary px-4 rounded-pill shadow-sm">
+                    <i class="bi bi-arrow-left"></i> Back to Books
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

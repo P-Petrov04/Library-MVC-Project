@@ -32,20 +32,28 @@ namespace Web.Controllers
             _bookCategoryRepo = bookCategoryRepo;
         }
 
-        public IActionResult Index() 
-        { 
+        public IActionResult Index()
+        {
             var books = _bookRepo.GetAll()
-                .Select(book => new { book.Id, book.Title, book.CoverImagePath, book.PublisherId, Authors = _bookAuthorRepo.GetAll()
-                .Where(ba => ba.BookId == book.Id)
-                .Join(_authorRepo.GetAll(), ba => ba.AuthorId, a => a.Id, (ba, a) => a.Name).ToList(), 
-                 Publisher = _publisherRepo.FirstOrDefault(p => p.Id == book.PublisherId)?.Name, Tags = _tagRepo.GetAll()
-                 .Where(t => t.CategoryId == book.Id).Select(t => t.Name).ToList(), Categories = _bookCategoryRepo.GetAll()
-                 .Where(bc => bc.BookId == book.Id).Join(_categoryRepo.GetAll(), bc => bc.CategoryId, c => c.Id, (bc, c) => c.Name).ToList() 
-                }).ToList(); 
-            
-            return View(books); 
-        }
+                .Select(book => new Book
+                {
+                    Id = book.Id,
+                    Title = book.Title,
+                    CoverImagePath = book.CoverImagePath,
+                    BookAuthors = _bookAuthorRepo.GetAll()
+                        .Where(ba => ba.BookId == book.Id)
+                        .Select(ba => new BookAuthor
+                        {
+                            Author = new Author
+                            {
+                                Name = _authorRepo.FirstOrDefault(a => a.Id == ba.AuthorId).Name
+                            }
+                        }).ToList()
+                })
+                .ToList();
 
+            return View(books);
+        }
 
         public IActionResult Privacy()
         {

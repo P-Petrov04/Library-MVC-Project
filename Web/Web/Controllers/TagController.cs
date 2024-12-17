@@ -117,7 +117,7 @@ namespace Web.Controllers
 
             tag.Name = model.Name;
 
-            // Ensure the category exists
+         
             var category = _categoryRepo.FirstOrDefault(c => c.Id == model.CategoryId);
             if (category == null)
             {

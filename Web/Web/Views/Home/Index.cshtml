@@ -1,33 +1,98 @@
-﻿@{
+﻿@model List<Common.Entities.Book>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <div class="row">
-        @foreach (var book in Model)
-        {
-            <div class="col-md-3 mb-4">
-                <div class="card h-100">
-                    <a href="@Url.Action("Details", "Home", new { id = book.Id })">
+<!-- Hero Section -->
+<section id="hero" class="hero-section text-white text-center py-5" style="background: url('/images/hero-placeholder.jpg') no-repeat center center / cover;">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="display-3 fw-bold">Explore the World of Books</h1>
+            <p class="lead">Discover new adventures, knowledge, and stories in our curated library collection.</p>
+            <a href="@Url.Action("Books", "Book")" class="btn btn-primary btn-lg rounded-pill shadow">Browse All Books</a>
+        </div>
+    </div>
+</section>
+
+<!-- Latest Books Section -->
+<section id="latest-books" class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Latest Arrivals</h2>
+        <div class="row">
+            @foreach (var book in Model.Take(10)) // Only top 10 latest books
+            {
+                    <div class="col-md-3 mb-4">
+                        <div class="card book-card h-100 shadow-sm">
+                            <a href="@Url.Action("Details", "Book", new { id = book.Id })" class="text-decoration-none">
+                            @if (!string.IsNullOrEmpty(book.CoverImagePath))
+                            {
+                                        <img src="~/images/@book.CoverImagePath" class="card-img-top book-img" alt="Book Cover" />
+                            }
+                            else
+                            {
+                                        <img src="~/images/default.png" class="card-img-top book-img" alt="Default Cover" />
+                            }
+                                <div class="card-body text-center">
+                                    <h5 class="card-title text-truncate">@book.Title</h5>
+                                    <p class="card-text">
+                                        <strong>Authors:</strong>
+                                    @if (book.BookAuthors?.Any() == true)
+                                    {
+                                        @string.Join(", ", book.BookAuthors.Select(ba => ba.Author?.Name))
+                                    }
+                                    else
+                                    {
+                                                <span>No Authors</span>
+                                    }
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Book Slider Section -->
+<section id="book-slider" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">Trending Books</h2>
+        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                @for (int i = 0; i < Model.Take(5).Count(); i++)
+                {
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="true" aria-label="Slide @(i + 1)"></button>
+                }
+            </div>
+            <div class="carousel-inner">
+                @foreach (var (book, index) in Model.Take(5).Select((book, i) => (book, i)))
+                {
+                        <div class="carousel-item @(index == 0 ? "active" : "") text-center">
                         @if (!string.IsNullOrEmpty(book.CoverImagePath))
                         {
-                            <img src="~/images/@book.CoverImagePath" class="card-img-top" alt="Book Cover" />
+                                    <img src="~/images/@book.CoverImagePath" class="d-block mx-auto slider-img" alt="Book Cover" />
                         }
                         else
                         {
-                            <img src="~/images/default.png" class="card-img-top" alt="Default Cover" />
+                                    <img src="~/images/default.png" class="d-block mx-auto slider-img" alt="Default Cover" />
                         }
-                        <div class="card-body text-center">
-                            <h5 class="card-title">@book.Title</h5>
-                            <p class="card-text">
-                                <strong>Authors:</strong>
-                                @string.Join(", ", book.Authors)
-                            </p>
+                            <div class="carousel-caption">
+                                <h5 class="fw-bold">@book.Title</h5>
+                            </div>
                         </div>
-                    </a>
-                </div>
+                }
             </div>
-        }
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
     </div>
-</div>
+</section>

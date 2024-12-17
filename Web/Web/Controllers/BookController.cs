@@ -33,10 +33,87 @@ namespace Web.Controllers
         }
 
         [HttpGet]
+        public IActionResult Books(string search, string filterBy)
+        {
+            var books = _bookRepo.GetAll()
+                .Select(b => new Book
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    CoverImagePath = b.CoverImagePath,
+                    ISBN = b.ISBN,
+                    Publisher = b.Publisher,
+                    BookAuthors = _bookAuthorRepo.GetAll()
+                        .Where(ba => ba.BookId == b.Id)
+                        .Select(ba => new BookAuthor
+                        {
+                            Author = _authorRepo.FirstOrDefault(a => a.Id == ba.AuthorId)
+                        }).ToList()
+                }).ToList();
+
+            // Apply search
+            if (!string.IsNullOrEmpty(search))
+            {
+                books = books.Where(b => b.Title.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            // Apply sorting
+            if (!string.IsNullOrEmpty(filterBy))
+            {
+                books = filterBy switch
+                {
+                    "ISBN" => books.OrderBy(b => b.ISBN).ToList(),
+                    "Publisher" => books.OrderBy(b => b.Publisher?.Name).ToList(),
+                    _ => books
+                };
+            }
+
+            return View(books);
+        }
+
+        [HttpGet]
+        public IActionResult Details(int id)
+        {
+            var book = _bookRepo.FirstOrDefault(b => b.Id == id);
+
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            var bookAuthors = _bookAuthorRepo.GetAll()
+                .Where(ba => ba.BookId == id)
+                .Select(ba => _authorRepo.FirstOrDefault(a => a.Id == ba.AuthorId).Name)
+                .ToList();
+
+            var bookCategories = _bookCategoryRepo.GetAll()
+                .Where(bc => bc.BookId == id)
+                .Select(bc => _categoryRepo.FirstOrDefault(c => c.Id == bc.CategoryId).Name)
+                .ToList();
+
+            var model = new
+            {
+                Id = book.Id,
+                Title = book.Title,
+                CoverImagePath = book.CoverImagePath,
+                Summary = book.Summary, // Add Summary here
+                Authors = bookAuthors,
+                Categories = bookCategories
+            };
+
+            return View(model);
+        }
+
+        [HttpGet]
         public IActionResult Index()
         {
-            var books = _bookRepo.GetAll(); // Fetch all books
-            return View(books); // Pass books to the Index view
+            // Fetch the latest 10 books based on PublishedDate descending
+            var books = _bookRepo.GetAll()
+                .OrderByDescending(b => b.PublishedDate) // Use PublishedDate for "latest" or change to Id if needed
+                .Take(10) // Only get the top 10 books
+                .ToList();
+
+            return View(books); // Pass the books to the view
         }
 
         [HttpGet]

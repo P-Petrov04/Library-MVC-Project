@@ -25,6 +25,9 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Book" asp-action="Books">Books</a> <!-- New Books Tab -->
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
@@ -47,7 +50,7 @@
                                     <a class="nav-link text-dark" asp-controller="Auth" asp-action="ChangeProfile">Change Profile</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Book" asp-action="Index">Manage Books</a> <!-- New -->
+                                    <a class="nav-link text-dark" asp-controller="Book" asp-action="Index">Manage Books</a>
                                 </li>
                             }
                             @if (userRole == 2)

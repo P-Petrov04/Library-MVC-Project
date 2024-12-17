@@ -1,0 +1,53 @@
+﻿@model List<Common.Entities.Book>
+
+@{
+    ViewData["Title"] = "All Books";
+}
+
+<h1 class="text-center">All Books</h1>
+
+<!-- Search and Filter -->
+<form method="get" class="mb-3">
+    <div class="row">
+        <div class="col-md-6">
+            <input type="text" name="search" class="form-control" placeholder="Search by Title" />
+        </div>
+        <div class="col-md-4">
+            <select name="filterBy" class="form-control">
+                <option value="">Sort By</option>
+                <option value="ISBN">ISBN</option>
+                <option value="Publisher">Publisher</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Apply</button>
+        </div>
+    </div>
+</form>
+
+<div class="row">
+    @foreach (var book in Model)
+    {
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                <a href="@Url.Action("Details", "Book", new { id = book.Id })">
+                    @if (!string.IsNullOrEmpty(book.CoverImagePath))
+                    {
+                        <img src="~/images/@book.CoverImagePath" class="book-img" alt="Book Cover" />
+                    }
+                    else
+                    {
+                        <img src="~/images/default.png" class="book-img" alt="Default Cover" />
+                    }
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@book.Title</h5>
+                        <p class="card-text">
+                            <strong>Authors:</strong>
+                            @string.Join(", ", book.BookAuthors.Select(ba => ba.Author.Name))
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    }
+</div>
