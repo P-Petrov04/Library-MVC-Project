@@ -6,7 +6,6 @@ using Web.ViewModels.Users;
 
 namespace Web.Controllers
 {
-    //[Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly BaseRepository<User> _usersRepo;
@@ -84,7 +83,5 @@ namespace Web.Controllers
 
             return RedirectToAction("Index");
         }
-
-
     }
 }

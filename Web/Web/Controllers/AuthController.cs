@@ -22,7 +22,7 @@ namespace Web.Controllers
         {
             if (HttpContext.Session.GetString("loggedUserId") != null)
             {
-                return RedirectToAction("Index", "Admin");
+                return RedirectToAction("Index","Admin");
             }
             ViewData["url"] = url;
             return View();
@@ -56,7 +56,7 @@ namespace Web.Controllers
             HttpContext.Session.SetString("UserName", loggedUser.Name);
             HttpContext.Session.SetInt32("UserRole", loggedUser.RoleId);
 
-            return RedirectToAction("Index", "Admin");
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: Change Profile Page

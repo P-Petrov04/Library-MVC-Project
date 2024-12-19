@@ -1,0 +1,32 @@
+﻿@model IEnumerable<Loan>
+@inject Common.Repositories.BaseRepository<Book> BookRepo
+@inject IHttpContextAccessor ContextAccessor
+
+<h1>Loans</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Book</th>
+            <th>Loan Date</th>
+            <th>Due Date</th>
+            <th>Return Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var loan in Model)
+        {
+            <tr>
+                <td>@BookRepo.FirstOrDefault(b => b.Id == loan.BookId).Title</td>
+                <td>@loan.LoanDate.ToString("dd-MM-yyyy")</td>
+                <td>@loan.DueDate.ToString("dd-MM-yyyy")</td>
+                @if(loan.ReturnDate == null){
+                    <td>None</td>
+                }
+                else{
+                    <td>@loan.ReturnDate.Value.ToString("dd-MM-yyyy")</td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>

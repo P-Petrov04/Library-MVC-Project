@@ -28,6 +28,8 @@ namespace Web
             builder.Services.AddControllersWithViews();
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddHttpContextAccessor(); // Needed for session handling
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 
             builder.Services.AddSession(options =>
             {

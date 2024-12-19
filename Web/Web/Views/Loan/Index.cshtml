@@ -1,0 +1,38 @@
+﻿@model Web.ViewModels.Loans.LoanVM
+@inject Common.Repositories.BaseRepository<Book> BookRepo
+@inject Common.Repositories.BaseRepository<User> UserRepo
+
+<h1>Loans</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Book</th>
+            <th>User</th>
+            <th>Loan Date</th>
+            <th>Due Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var loan in Model.Items)
+        {
+            <tr>
+                <td>@BookRepo.FirstOrDefault(b => b.Id == loan.BookId).Title</td>
+                <td>@UserRepo.FirstOrDefault(u => u.Id == loan.UserId).Name</td>
+                <td>@loan.LoanDate.Date.ToString("dd-MM-yyyy")</td>
+                <td>@loan.DueDate.Date.ToString("dd-MM-yyyy")</td>
+                <td>
+                    <form asp-action="ReturnBook" asp-controller="Loan" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@loan.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">Return</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="mt-3">
+    <a asp-controller="Admin" asp-action="Index" class="btn btn-primary">
+        Back
+    </a>
+</div>

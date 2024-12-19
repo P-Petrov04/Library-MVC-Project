@@ -4,6 +4,11 @@
     ViewData["Title"] = Model.Title;
 }
 
+@if (TempData["Error"] != null)
+{
+    <p class="text-danger">@TempData["Error"]</p>
+}
+
 <div id="book-details" class="container mt-5">
     <!-- Flex Container for Image and Details -->
     <div class="details-container">
@@ -61,6 +66,23 @@
                         <span>No summary available for this book.</span>
                     }
                 </p>
+            </div>
+
+            <!-- Loan Form -->
+            <div class="loan-form mt-5">
+                <h5>Loan this Book</h5>
+                <form method="post" asp-action="MakeLoan" asp-controller="Loan">
+                    <input type="hidden" name="BookId" value="@Model.Id" />
+                    <div class="mb-3">
+                        <label for="LoanDate" class="form-label">Loan Date</label>
+                        <input type="date" id="LoanDate" name="LoanDate" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="DueDate" class="form-label">Due Date</label>
+                        <input type="date" id="DueDate" name="DueDate" class="form-control" required />
+                    </div>
+                    <button type="submit" class="btn btn-success">Loan</button>
+                </form>
             </div>
 
             <!-- Back Button -->
