@@ -16,9 +16,26 @@ namespace Web.Controllers
             _categoryRepo = categoryRepo;
         }
 
+        private bool IsAuthorized()
+        {
+            var userRole = HttpContext.Session.GetInt32("UserRole");
+            return userRole == 1 || userRole == 2; // Admin (1) or Moderator (2)
+        }
+
+        private IActionResult UnauthorizedRedirect()
+        {
+            TempData["Error"] = "You are not authorized to access this page.";
+            return RedirectToAction("Login", "Auth");
+        }
+
         [HttpGet]
         public IActionResult Index()
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             TagVM tags = new TagVM()
             {
                 Items = _tagRepo.GetAll()
@@ -29,12 +46,22 @@ namespace Web.Controllers
         [HttpGet]
         public IActionResult AddTag()
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> AddTag(AddTagVM model)
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -68,6 +95,11 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteTag(int id)
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             Tag item = _tagRepo.FirstOrDefault(x => x.Id == id);
 
             if (item != null)
@@ -79,6 +111,11 @@ namespace Web.Controllers
         [HttpGet]
         public IActionResult EditTag(int id)
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             Tag tag = _tagRepo.FirstOrDefault(t => t.Id == id);
 
             if (tag == null)
@@ -101,6 +138,11 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> EditTag(EditTagVM model)
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             if (!ModelState.IsValid)
             {
                 TempData["Error"] = "Please correct the errors.";

@@ -4,13 +4,13 @@
     ViewData["Title"] = "All Books";
 }
 
+<h2>All Books</h2>
+
 <div class="mt-3">
     <a asp-controller="Book" asp-action="AddBook" class="btn btn-primary">
         Add New Book
     </a>
 </div>
-
-<h2>All Books</h2>
 
 @if (TempData["Success"] != null)
 {

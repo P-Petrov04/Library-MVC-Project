@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Common.Repositories;
 using Web.ViewModels.Auth;
 using Common.Entities;
 
 namespace Web.Controllers
 {
-    [Route("Auth")]
+    [Route("[controller]/[action]")]
     public class AuthController : Controller
     {
         private readonly BaseRepository<User> _usersRepo;
@@ -17,24 +16,25 @@ namespace Web.Controllers
         }
 
         // GET: Login Page
-        [HttpGet("Login")]
-        public IActionResult Login(string url)
+        [HttpGet]
+        public IActionResult Login(string url = "/Home/Index")
         {
             if (HttpContext.Session.GetString("loggedUserId") != null)
             {
-                return RedirectToAction("Index","Admin");
+                return Redirect(url);
             }
-            ViewData["url"] = url;
+
+            ViewData["ReturnUrl"] = url;
             return View();
         }
 
         // POST: Login User
-        [HttpPost("Login")]
+        [HttpPost]
         public IActionResult Login(LoginVM model)
         {
             if (HttpContext.Session.GetString("loggedUserId") != null)
             {
-                return RedirectToAction("Index", "Admin");
+                return RedirectToAction("Index", "Home");
             }
 
             if (!ModelState.IsValid)
@@ -47,10 +47,11 @@ namespace Web.Controllers
 
             if (loggedUser == null)
             {
-                ModelState.AddModelError("authError", "Invalid login attempt.");
+                ModelState.AddModelError("authError", "Invalid email or password.");
                 return View(model);
             }
 
+            // Set session values
             HttpContext.Session.SetString("loggedUserId", loggedUser.Id.ToString());
             HttpContext.Session.SetString("UserEmail", loggedUser.Email);
             HttpContext.Session.SetString("UserName", loggedUser.Name);
@@ -60,7 +61,7 @@ namespace Web.Controllers
         }
 
         // GET: Change Profile Page
-        [HttpGet("ChangeProfile")]
+        [HttpGet]
         public IActionResult ChangeProfile()
         {
             var loggedUserId = HttpContext.Session.GetString("loggedUserId");
@@ -88,7 +89,7 @@ namespace Web.Controllers
         }
 
         // POST: Change Profile
-        [HttpPost("ChangeProfile")]
+        [HttpPost]
         public IActionResult ChangeProfile(ChangeProfileVM model)
         {
             var loggedUserId = HttpContext.Session.GetString("loggedUserId");
@@ -113,6 +114,7 @@ namespace Web.Controllers
                 return View(model);
             }
 
+            // Update user information
             if (!string.IsNullOrWhiteSpace(model.Name))
             {
                 dbUser.Name = model.Name;
@@ -132,11 +134,11 @@ namespace Web.Controllers
             _usersRepo.Update(dbUser);
 
             TempData["Success"] = "Profile updated successfully.";
-            return RedirectToAction("Index", "Admin");
+            return RedirectToAction("ChangeProfile");
         }
 
-        // Logout User
-        [HttpGet("Logout")]
+        // GET: Logout User
+        [HttpGet]
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();

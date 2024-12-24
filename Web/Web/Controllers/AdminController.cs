@@ -1,7 +1,7 @@
 ﻿using Common.Entities;
 using Common.Repositories;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using Web.ViewModels.Users;
 
 namespace Web.Controllers
@@ -17,10 +17,31 @@ namespace Web.Controllers
             _rolesRepo = rolesRepo;
         }
 
+        // Helper method to check session and role
+        private bool IsAuthorizedAdminOrModerator()
+        {
+            var userRole = HttpContext.Session.GetInt32("UserRole");
+
+            // Assuming RoleId = 1 corresponds to Admin
+            return userRole != null && (userRole == 1 || userRole == 2); // Adjust RoleId if necessary
+        }
+        private bool IsAuthorizedAdmin()
+        {
+            var userRole = HttpContext.Session.GetInt32("UserRole");
+
+            // Assuming RoleId = 1 corresponds to Admin
+            return userRole != null && userRole == 1; // Adjust RoleId if necessary
+        }
+
         // GET: Admin Dashboard
         [HttpGet]
         public IActionResult Index()
         {
+            if (!IsAuthorizedAdminOrModerator())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
             UserVM model = new UserVM
             {
                 Items = _usersRepo.GetAll()
@@ -33,6 +54,11 @@ namespace Web.Controllers
         [HttpGet]
         public IActionResult RegisterUser()
         {
+            if (!IsAuthorizedAdmin())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
             return View();
         }
 
@@ -40,6 +66,11 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterUser(RegisterUserVM model)
         {
+            if (!IsAuthorizedAdmin())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -76,6 +107,11 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteUser(int id)
         {
+            if (!IsAuthorizedAdmin())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
             User item = _usersRepo.FirstOrDefault(x => x.Id == id);
 
             if (item != null)

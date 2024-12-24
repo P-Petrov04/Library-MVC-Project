@@ -1,5 +1,6 @@
 ﻿using Common.Entities;
 using Common.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Web.ViewModels.Categories;
 
@@ -15,8 +16,26 @@ namespace Web.Controllers
             _categoryRepo = categoryRepo;
             _tagRepo = tagRepo;
         }
+
+        private bool IsAuthorized()
+        {
+            var userRole = HttpContext.Session.GetInt32("UserRole");
+            return userRole == 1 || userRole == 2; // Admin (1) or Moderator (2)
+        }
+
+        private IActionResult UnauthorizedRedirect()
+        {
+            TempData["Error"] = "You are not authorized to access this page.";
+            return RedirectToAction("Login", "Auth");
+        }
+
         public IActionResult Index()
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             CategoryVM model = new CategoryVM()
             {
                 Items = _categoryRepo.GetAll()
@@ -27,27 +46,38 @@ namespace Web.Controllers
         [HttpGet]
         public IActionResult AddCategory()
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> AddCategory(AddCategoryVM model)
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            Category category = new Category();
-
-            //check is category already exist
-            if (_categoryRepo.FirstOrDefault(c => c.Name.Equals(model.Name)) != null)
+            // Check if category already exists
+            if (_categoryRepo.FirstOrDefault(c => c.Name.Equals(model.Name, StringComparison.OrdinalIgnoreCase)) != null)
             {
-                TempData["Error"] = $"This '{model.Name}' already exist.";
+                TempData["Error"] = $"The category '{model.Name}' already exists.";
                 return RedirectToAction("AddCategory");
             }
 
-            category.Name = model.Name;
+            Category category = new Category
+            {
+                Name = model.Name
+            };
 
             _categoryRepo.Add(category);
             return RedirectToAction("Index");
@@ -56,10 +86,16 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteCategory(int id)
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             Category item = _categoryRepo.FirstOrDefault(x => x.Id == id);
 
             if (item != null)
             {
+                // Delete all associated tags
                 foreach (var tag in _tagRepo.GetAll().Where(t => t.CategoryId == item.Id))
                 {
                     _tagRepo.Delete(tag);
@@ -74,11 +110,21 @@ namespace Web.Controllers
         [HttpGet]
         public IActionResult EditCategory(int id)
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             Category category = _categoryRepo.FirstOrDefault(c => c.Id == id);
 
-            EditCategoryVM model = new EditCategoryVM();
-            model.Id = category.Id;
-            model.Name = category.Name;
+            if (category == null)
+                return NotFound();
+
+            EditCategoryVM model = new EditCategoryVM
+            {
+                Id = category.Id,
+                Name = category.Name
+            };
 
             return View(model);
         }
@@ -86,12 +132,20 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> EditCategory(EditCategoryVM model)
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
             Category category = _categoryRepo.FirstOrDefault(c => c.Id == model.Id);
+
+            if (category == null)
+                return NotFound();
 
             category.Name = model.Name;
             _categoryRepo.Update(category);

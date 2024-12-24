@@ -21,8 +21,25 @@ namespace Web.Controllers
             _loanRepo = loanRepo;
         }
 
+        private bool IsAuthorized()
+        {
+            var userRole = HttpContext.Session.GetInt32("UserRole");
+            return userRole == 1 || userRole == 2; // Admin (1) or Moderator (2)
+        }
+
+        private IActionResult UnauthorizedRedirect()
+        {
+            TempData["Error"] = "You are not authorized to access this page.";
+            return RedirectToAction("Login", "Auth");
+        }
+
         public IActionResult Index()
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             LoanVM model = new LoanVM()
             {
                 Items = _loanRepo.GetAll().Where(l => l.ReturnDate == null)
@@ -106,6 +123,11 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ReturnBook(int id)
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             Loan curr = _loanRepo.FirstOrDefault(l => l.Id == id);
             curr.ReturnDate = DateTime.Now;
 

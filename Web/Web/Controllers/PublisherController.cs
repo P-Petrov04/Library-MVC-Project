@@ -17,8 +17,24 @@ namespace Web.Controllers
             _bookRepo = bookRepo;
         }
 
+        private bool IsAuthorized()
+        {
+            var userRole = HttpContext.Session.GetInt32("UserRole");
+            return userRole == 1 || userRole == 2; // Admin (1) or Moderator (2)
+        }
+
+        private IActionResult UnauthorizedRedirect()
+        {
+            TempData["Error"] = "You are not authorized to access this page.";
+            return RedirectToAction("Login", "Auth");
+        }
         public IActionResult Index()
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             PublisherVM model = new PublisherVM()
             {
                 Items = _publisherRepo.GetAll()
@@ -29,12 +45,22 @@ namespace Web.Controllers
         [HttpGet]
         public IActionResult AddPublisher()
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> AddPublisher(AddPublisherVM model)
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -59,6 +85,11 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DeletePublisher(int id)
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             Publisher publisher = _publisherRepo.FirstOrDefault(p => p.Id == id);
 
             if (publisher != null)
@@ -77,6 +108,11 @@ namespace Web.Controllers
         [HttpGet]
         public IActionResult EditPublisher(int id)
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             Publisher publisher = _publisherRepo.FirstOrDefault(p => p.Id == id);
 
             if (publisher == null)
@@ -97,6 +133,11 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> EditPublisher(EditPublisherVM model)
         {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);

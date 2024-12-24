@@ -41,7 +41,13 @@
                                 <span class="nav-link text-dark">Welcome, @loggedUserName</span>
                             </li>
 
-                            @if (userRole == 1 || userRole == 2)
+                            @if (userRole == 1)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Admin" asp-action="Index">Dashboard</a>
+                                </li>
+                            }
+                            @if (userRole == 2)
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-controller="Admin" asp-action="Index">Dashboard</a>
