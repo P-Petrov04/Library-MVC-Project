@@ -83,6 +83,7 @@ namespace Web.Controllers
             };
 
             _authorRepo.Add(author);
+            TempData["Success"] = $"Author '{author.Name}' added successfully!";
             return RedirectToAction("Index");
         }
 
@@ -101,6 +102,7 @@ namespace Web.Controllers
             {
                 _authorRepo.Delete(author);
             }
+            TempData["Success"] = $"Author '{author.Name}' deleted successfully!";
 
             return RedirectToAction("Index");
         }
@@ -157,6 +159,7 @@ namespace Web.Controllers
             author.Bio = model.Bio;
             _authorRepo.Update(author);
 
+            TempData["Success"] = $"Author '{author.Name}' edited successfully!";
             return RedirectToAction("Index");
         }
     }

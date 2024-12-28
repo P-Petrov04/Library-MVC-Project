@@ -2,7 +2,9 @@
 using Common.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Web.ViewModels.Authors;
 using Web.ViewModels.Categories;
+using Web.ViewModels.Publishers;
 
 namespace Web.Controllers
 {
@@ -55,35 +57,6 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddCategory(AddCategoryVM model)
-        {
-            if (!IsAuthorized())
-            {
-                return UnauthorizedRedirect();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            // Check if category already exists
-            if (_categoryRepo.FirstOrDefault(c => c.Name.Equals(model.Name, StringComparison.OrdinalIgnoreCase)) != null)
-            {
-                TempData["Error"] = $"The category '{model.Name}' already exists.";
-                return RedirectToAction("AddCategory");
-            }
-
-            Category category = new Category
-            {
-                Name = model.Name
-            };
-
-            _categoryRepo.Add(category);
-            return RedirectToAction("Index");
-        }
-
-        [HttpPost]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             if (!IsAuthorized())
@@ -93,15 +66,18 @@ namespace Web.Controllers
 
             Category item = _categoryRepo.FirstOrDefault(x => x.Id == id);
 
+
             if (item != null)
             {
                 // Delete all associated tags
                 foreach (var tag in _tagRepo.GetAll().Where(t => t.CategoryId == item.Id))
                 {
                     _tagRepo.Delete(tag);
+
                 }
 
                 _categoryRepo.Delete(item);
+                TempData["Success"] = $"Category '{item.Name}' deleted successfully!";
             }
 
             return RedirectToAction("Index");
@@ -150,6 +126,7 @@ namespace Web.Controllers
             category.Name = model.Name;
             _categoryRepo.Update(category);
 
+            TempData["Success"] = $"Category '{category.Name}' edited successfully!";
             return RedirectToAction("Index");
         }
     }

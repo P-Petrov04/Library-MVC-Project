@@ -88,7 +88,7 @@ namespace Web.Controllers
             tag.CategoryId = category.Id;
 
             _tagRepo.Add(tag);
-            TempData["Success"] = "Tag added successfully!";
+            TempData["Success"] = $"Tag '{tag.Name}' added successfully!";
             return RedirectToAction("Index");
         }
 
@@ -103,7 +103,12 @@ namespace Web.Controllers
             Tag item = _tagRepo.FirstOrDefault(x => x.Id == id);
 
             if (item != null)
+            {
+                TempData["Success"] = $"Tag '{item.Name}' deleted successfully!";
                 _tagRepo.Delete(item);
+            }
+                
+
 
             return RedirectToAction("Index");
         }
@@ -170,7 +175,8 @@ namespace Web.Controllers
             tag.CategoryId = model.CategoryId;
 
             _tagRepo.Update(tag);
-            TempData["Success"] = "Tag updated successfully.";
+
+            TempData["Success"] = $"Tag '{tag.Name}' edited successfully.";
             return RedirectToAction("Index");
         }
     }

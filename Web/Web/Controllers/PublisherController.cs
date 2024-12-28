@@ -79,6 +79,7 @@ namespace Web.Controllers
             publisher.Address = model.Address;
 
             _publisherRepo.Add(publisher);
+            TempData["Success"] = $"Publisher '{publisher.Name}' added successfully!";
             return RedirectToAction("Index");
         }
 
@@ -98,7 +99,7 @@ namespace Web.Controllers
                 {
                     _bookRepo.Delete(book);
                 }
-
+                TempData["Success"] = $"Publisher '{publisher.Name}' deleted successfully!";
                 _publisherRepo.Delete(publisher);
             }
 
@@ -154,6 +155,7 @@ namespace Web.Controllers
             publisher.Address = model.Address;
             _publisherRepo.Update(publisher);
 
+            TempData["Success"] = $"Publisher '{publisher.Name}' edited successfully!";
             return RedirectToAction("Index");
         }
     }

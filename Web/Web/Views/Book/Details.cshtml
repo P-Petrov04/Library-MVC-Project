@@ -9,6 +9,11 @@
     <p class="text-danger">@TempData["Error"]</p>
 }
 
+@if (TempData["Success"] != null)
+{
+    <p class="text-success">@TempData["Success"]</p>
+}
+
 <div id="book-details" class="container mt-5">
     <!-- Flex Container for Image and Details -->
     <div class="details-container">
@@ -68,21 +73,49 @@
                 </p>
             </div>
 
-            <!-- Loan Form -->
-            <div class="loan-form mt-5">
-                <h5>Loan this Book</h5>
-                <form method="post" asp-action="MakeLoan" asp-controller="Loan">
+            <!-- Add Review Form -->
+            <div class="add-review-form mt-5">
+                <h5>Add a Review</h5>
+                <form method="post" asp-action="AddReview" asp-controller="Book">
                     <input type="hidden" name="BookId" value="@Model.Id" />
                     <div class="mb-3">
-                        <label for="LoanDate" class="form-label">Loan Date</label>
-                        <input type="date" id="LoanDate" name="LoanDate" class="form-control" required />
+                        <label for="Rating" class="form-label">Rating (1-5)</label>
+                        <input type="number" id="Rating" name="Rating" class="form-control" min="1" max="5" required />
                     </div>
                     <div class="mb-3">
-                        <label for="DueDate" class="form-label">Due Date</label>
-                        <input type="date" id="DueDate" name="DueDate" class="form-control" required />
+                        <label for="Comment" class="form-label">Comment</label>
+                        <textarea id="Comment" name="Comment" class="form-control" rows="3" required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-success">Loan</button>
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
                 </form>
+            </div>
+
+            <!-- Reviews Section -->
+            <div class="reviews-section mt-5">
+                <h5>Reviews</h5>
+                @if (Model.Reviews != null && Model.Reviews.Count > 0)
+                {
+                    <ul class="list-group">
+                        @foreach (var review in Model.Reviews)
+                        {
+                            <li class="list-group-item">
+                                <strong>Rating:</strong> @review.Rating / 5<br />
+                                <strong>Comment:</strong> @review.Comment
+                                @if (ViewBag.UserRole == 1 || ViewBag.UserRole == 2 || (ViewBag.UserId != null && review.UserId == int.Parse(ViewBag.UserId)))
+                                {
+                                    <form method="post" asp-action="DeleteReview" asp-controller="Book" class="d-inline-block ms-3">
+                                        <input type="hidden" name="ReviewId" value="@review.Id" />
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                }
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>No reviews yet for this book.</p>
+                }
             </div>
 
             <!-- Back Button -->

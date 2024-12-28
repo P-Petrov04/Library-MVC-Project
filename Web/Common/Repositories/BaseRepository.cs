@@ -18,6 +18,8 @@ namespace Common.Repositories
             _items = _context.Set<T>();
         }
 
+
+
         public List<T> GetAll(Expression<Func<T, bool>> filter = null)
         {
             IQueryable<T> query = _items;

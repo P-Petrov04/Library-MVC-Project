@@ -8,6 +8,11 @@
     </a>
 </div>
 
+@if (TempData["Success"] != null)
+{
+    <p class="text-success">@TempData["Success"]</p>
+}
+
 <table class="table">
     <thead>
         <tr>
