@@ -1,5 +1,4 @@
 ﻿@model dynamic
-
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -14,84 +13,94 @@
     <p class="text-success">@TempData["Success"]</p>
 }
 
-<div id="book-details" class="container mt-5">
+<div id="book-details" class="container-fluid body-content">
     <!-- Flex Container for Image and Details -->
-    <div class="details-container">
+    <div class="row">
         <!-- Book Cover Section -->
-        <div class="book-details-card">
-            @if (!string.IsNullOrEmpty(Model.CoverImagePath))
-            {
-                <img src="~/images/@Model.CoverImagePath" class="book-details-img" alt="Book Cover" />
-            }
-            else
-            {
-                <img src="~/images/default.png" class="book-details-img" alt="Default Cover" />
-            }
+        <div class="col-md-4">
+            <div class="book-details-card">
+                @if (!string.IsNullOrEmpty(Model.CoverImagePath))
+                {
+                    <img src="~/images/@Model.CoverImagePath" class="book-details-img" alt="Book Cover" />
+                }
+                else
+                {
+                    <img src="~/images/default.png" class="book-details-img" alt="Default Cover" />
+                }
+            </div>
         </div>
-
         <!-- Book Details Section -->
-        <div class="book-details-info">
-            <h1 class="details-title">@Model.Title</h1>
-            <hr />
-
-            <div class="details-meta mb-3">
-                <strong>Book ID:</strong> @Model.Id
-            </div>
-            <div class="details-meta mb-3">
-                <strong>Authors:</strong>
-                @if (Model.Authors != null && Model.Authors.Count > 0)
-                {
-                    @string.Join(", ", Model.Authors)
-                }
-                else
-                {
-                    <span>No authors available</span>
-                }
-            </div>
-            <div class="details-meta mb-3">
-                <strong>Categories:</strong>
-                @if (Model.Categories != null && Model.Categories.Count > 0)
-                {
-                    @string.Join(", ", Model.Categories)
-                }
-                else
-                {
-                    <span>No categories available</span>
-                }
-            </div>
-            <div class="details-summary mt-4">
-                <h5>Summary</h5>
-                <p>
-                    @if (!string.IsNullOrEmpty(Model.Summary))
+        <div class="col-md-8">
+            <div class="book-details-info">
+                <h1 class="details-title">@Model.Title</h1>
+                <hr />
+                <div class="details-meta mb-3">
+                    <strong>Book ID:</strong> @Model.Id
+                </div>
+                <div class="details-meta mb-3">
+                    <strong>Authors:</strong>
+                    @if (Model.Authors != null && Model.Authors.Count > 0)
                     {
-                        @Model.Summary
+                        @string.Join(", ", Model.Authors)
                     }
                     else
                     {
-                        <span>No summary available for this book.</span>
+                        <span>No authors available</span>
                     }
-                </p>
-            </div>
-
-            <!-- Loan Form -->
-            <div class="loan-form mt-5">
-                <h5>Loan this Book</h5>
-                <form method="post" asp-action="MakeLoan" asp-controller="Loan">
-                    <input type="hidden" name="BookId" value="@Model.Id" />
-                    <div class="mb-3">
-                        <label for="LoanDate" class="form-label">Loan Date</label>
-                        <input type="date" id="LoanDate" name="LoanDate" class="form-control" required />
+                </div>
+                <div class="details-meta mb-3">
+                    <strong>Categories:</strong>
+                    @if (Model.Categories != null && Model.Categories.Count > 0)
+                    {
+                        @string.Join(", ", Model.Categories)
+                    }
+                    else
+                    {
+                        <span>No categories available</span>
+                    }
+                </div>
+                <div class="details-summary-loan d-flex">
+                    <div class="details-summary flex-grow-1">
+                        <h5>Summary</h5>
+                        <p>
+                            @if (!string.IsNullOrEmpty(Model.Summary))
+                            {
+                                @Model.Summary
+                            }
+                            else
+                            {
+                                <span>No summary available for this book.</span>
+                            }
+                        </p>
                     </div>
-                    <div class="mb-3">
-                        <label for="DueDate" class="form-label">Due Date</label>
-                        <input type="date" id="DueDate" name="DueDate" class="form-control" required />
+                    <!-- Loan Form -->
+                    <div class="loan-form mt-5">
+                        <h5>Loan this Book</h5>
+                        <form method="post" asp-action="MakeLoan" asp-controller="Loan">
+                            <input type="hidden" name="BookId" value="@Model.Id" />
+                            <div class="mb-3">
+                                <label for="LoanDate" class="form-label">Loan Date</label>
+                                <input type="date" id="LoanDate" name="LoanDate" class="form-control" required />
+                            </div>
+                            <div class="mb-3">
+                                <label for="DueDate" class="form-label">Due Date</label>
+                                <input type="date" id="DueDate" name="DueDate" class="form-control" required />
+                            </div>
+                            <button type="submit" class="btn btn-success">Loan</button>
+                        </form>
                     </div>
-                    <button type="submit" class="btn btn-success">Loan</button>
-                </form>
-            </div>
 
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Review Form and Reviews Section -->
+    <div class="row mt-5">
+        <div class="col-md-6">
             <!-- Add Review Form -->
-            <div class="add-review-form mt-5">
+            <div class="add-review-form mb-5">
                 <h5>Add a Review</h5>
                 <form method="post" asp-action="AddReview" asp-controller="Book">
                     <input type="hidden" name="BookId" value="@Model.Id" />
@@ -106,9 +115,10 @@
                     <button type="submit" class="btn btn-primary">Submit Review</button>
                 </form>
             </div>
-
+        </div>
+        <div class="col-md-6">
             <!-- Reviews Section -->
-            <div class="reviews-section mt-5">
+            <div class="reviews-section mb-5">
                 <h5>Reviews</h5>
                 @if (Model.Reviews != null && Model.Reviews.Count > 0)
                 {
@@ -134,7 +144,6 @@
                     <p>No reviews yet for this book.</p>
                 }
             </div>
-
             <!-- Back Button -->
             <div class="mt-4">
                 <a href="@Url.Action("Books", "Book")" class="btn btn-outline-primary px-4 rounded-pill shadow-sm">
@@ -144,3 +153,89 @@
         </div>
     </div>
 </div>
+
+<style>
+    #book-details {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .details-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .book-details-card {
+        flex: 1;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .book-details-img {
+        width: 75%;
+        transition: transform 0.3s ease;
+    }
+
+    .book-details-card:hover .book-details-img {
+        transform: scale(1.03);
+    }
+
+    .book-details-info {
+        flex: 2;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px 30px;
+        color: #333;
+    }
+
+    .details-title {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #007bff;
+        margin-bottom: 15px;
+    }
+
+    .details-meta {
+        font-size: 1rem;
+        color: #555;
+        margin-bottom: 10px;
+        line-height: 1.6;
+    }
+
+        .details-meta strong {
+            color: #333;
+        }
+
+    .details-summary h5 {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .details-summary p {
+        font-size: 0.95rem;
+        color: #555;
+        line-height: 1.6;
+    }
+
+    .loan-form {
+        flex: 1;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+</style>
