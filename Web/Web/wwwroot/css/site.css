@@ -1,24 +1,55 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
+    overflow-x: hidden
+}
+
+.container {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100%;
+    max-width: 100%;
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
+}
+
+header {
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
 }
 
-
-
+.container-fluid {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
 
 .card {
     width: 180px;
@@ -80,116 +111,8 @@ a {
     a:hover .card-title {
         color: #007bff;
     }
-
-
-
-
-
-/* Book Details Container */
-#book-details {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-/* Flex Container for Image and Details */
-.details-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 30px; /* Space between image and details */
-    justify-content: center; /* Center the content horizontally */
-    align-items: center; /* Center both items vertically */
-}
-
-/* Book Cover Styling */
-.book-details-card {
-    flex: 1;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.book-details-img {
-    width: 100%;
-    max-width: 450px; /* Ensure image doesn't get too large */
-    object-fit: contain; /* Maintain image aspect ratio without stretching */
-    transition: transform 0.3s ease;
-}
-
-.book-details-card:hover .book-details-img {
-    transform: scale(1.03);
-}
-
-/* Book Information Styling */
-.book-details-info {
-    flex: 2;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px 30px;
-    color: #333;
-}
-
-/* Book Title Styling */
-.details-title {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #007bff;
-    margin-bottom: 15px;
-}
-
-/* Metadata Section */
-.details-meta {
-    font-size: 1rem;
-    color: #555;
-    margin-bottom: 10px;
-    line-height: 1.6;
-}
-
-    .details-meta strong {
-        color: #333;
-    }
-
-/* Summary Section */
-.details-summary h5 {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.details-summary p {
-    font-size: 0.95rem;
-    color: #555;
-    line-height: 1.6;
-}
-
-/* Button Styling */
-.btn-outline-primary {
-    font-size: 0.9rem;
-    padding: 10px 20px;
-    transition: all 0.3s ease;
-}
-
-    .btn-outline-primary:hover {
-        background-color: #007bff;
-        color: #fff;
-        transform: scale(1.05);
-    }
-
-
-
-
-
 /* Hero Section */
+
 .hero-section {
     position: relative;
     color: #fff;
@@ -220,8 +143,8 @@ a {
 .hero-section p {
     font-size: 1.2rem;
 }
-
 /* Book Card Styling */
+
 .book-card {
     border-radius: 10px;
     overflow: hidden;
@@ -237,8 +160,8 @@ a {
     height: 250px;
     object-fit: cover;
 }
-
 /* Book Slider */
+
 .slider-img {
     max-height: 400px;
     object-fit: contain;
@@ -256,4 +179,9 @@ a {
     background-color: #007bff;
 }
 
-
+.footer {
+    background-color: #d4d4d4;
+    padding: 10px;
+    margin-bottom: -50px;
+    width: 100%;
+    margin-top: auto; /* Push the footer to the bottom */
