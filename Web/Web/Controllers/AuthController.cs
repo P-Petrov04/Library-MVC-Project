@@ -3,6 +3,7 @@ using Common.Repositories;
 using Web.ViewModels.Auth;
 using Common.Entities;
 using Web.ViewModels.Users;
+using Microsoft.AspNetCore.Http;
 
 namespace Web.Controllers
 {
@@ -10,10 +11,12 @@ namespace Web.Controllers
     public class AuthController : Controller
     {
         private readonly BaseRepository<User> _usersRepo;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthController(BaseRepository<User> usersRepo)
+        public AuthController(BaseRepository<User> usersRepo, IHttpContextAccessor httpContextAccessor)
         {
             _usersRepo = usersRepo;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: User List
@@ -37,6 +40,94 @@ namespace Web.Controllers
         private bool IsAdmin()
         {
             return HttpContext.Session.GetInt32("UserRole") == 1; // Assuming 1 is the Admin RoleId
+        }
+
+        // GET: Edit User
+        [HttpGet]
+        public IActionResult EditUser(int id)
+        {
+            if (!IsAdmin())
+            {
+                TempData["Error"] = "You must be an admin to access this page.";
+                return RedirectToAction("Login");
+            }
+
+            var user = _usersRepo.FirstOrDefault(u => u.Id == id);
+            if (user == null)
+            {
+                TempData["Error"] = "User not found.";
+                return RedirectToAction("UserList");
+            }
+
+            var model = new EditUserVM
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                RoleId = user.RoleId
+            };
+
+            return View(model);
+        }
+
+        // POST: Edit User
+        [HttpPost]
+        public async Task<IActionResult> EditUser(EditUserVM model)
+        {
+            if (!IsAdmin())
+            {
+                TempData["Error"] = "You must be an admin to access this page.";
+                return RedirectToAction("Login");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = "Please correct the errors.";
+                return RedirectToAction("EditUser", new { id = model.Id });
+            }
+
+            var user = _usersRepo.FirstOrDefault(u => u.Id == model.Id);
+            if (user == null)
+            {
+                TempData["Error"] = "User not found.";
+                return RedirectToAction("UserList");
+            }
+
+            user.Name = model.Name;
+            user.Email = model.Email;
+            user.RoleId = model.RoleId;
+
+            _usersRepo.Update(user);
+
+            TempData["Success"] = "User updated successfully.";
+            return RedirectToAction("UserList");
+        }
+
+
+        // POST: Delete User
+        [HttpPost]
+        public IActionResult DeleteUser(int id)
+        {
+            var users = _usersRepo.GetAll().ToList();
+            var userToRemove = users.FirstOrDefault(u => u.Id == id);
+            if (userToRemove != null)
+            {
+                users.Remove(userToRemove);
+
+                // Re-save all users except the removed one
+                foreach (var user in users)
+                {
+                    _usersRepo.Update(user);
+                }
+
+                TempData["Success"] = "User deleted successfully.";
+            }
+            else
+            {
+                TempData["Error"] = "User not found.";
+            }
+
+            return RedirectToAction("UserList");
         }
 
 

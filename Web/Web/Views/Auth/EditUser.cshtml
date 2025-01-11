@@ -1,0 +1,37 @@
+﻿@model Web.ViewModels.Users.EditUserVM
+@{
+    ViewBag.Title = "Edit User";
+}
+
+<h2>Edit User</h2>
+
+<form asp-action="EditUser" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="RoleId"></label>
+        <input asp-for="RoleId" class="form-control" />
+        <span asp-validation-for="RoleId" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a asp-controller="Auth" asp-action="UserList" class="btn btn-secondary">Back to User List</a>
+</form>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
