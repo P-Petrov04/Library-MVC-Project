@@ -96,26 +96,28 @@
                 <h5>Loan status</h5>
                 @if (ViewBag.LoanDates != null && ViewBag.LoanDates.Count > 0)
                 {
-                    // Find the loan record without a return date or with a null return date
-                    var lastLoan = (dynamic)null;
+                    var loansToShow = new List<dynamic>();
                     foreach (var loan in ViewBag.LoanDates)
                     {
                         if (string.IsNullOrEmpty(loan.ReturnDate) || loan.ReturnDate == "N/A")
                         {
-                            lastLoan = loan;
-                            break;
+                            loansToShow.Add(loan);
                         }
                     }
-                    if (lastLoan != null)
+
+                    if (loansToShow.Count > 0)
                     {
-                        bool isAvailable = lastLoan.ReturnDate != "N/A" && DateTime.Parse(lastLoan.ReturnDate) >= DateTime.Today;
                         <ul class="list-group">
-                            <li class="list-group-item">
-                                <strong>Loan Date:</strong> @lastLoan.LoanDate<br />
-                                <strong>Due Date:</strong> @lastLoan.DueDate<br />
-                                <strong>Return Date:</strong> @lastLoan.ReturnDate<br />
-                                <strong>Status:</strong> @(isAvailable ? "Available" : "Unavailable")
-                            </li>
+                            @foreach (var loan in loansToShow)
+                            {
+                                bool isAvailable = loan.ReturnDate != "N/A" && DateTime.Parse(loan.ReturnDate) >= DateTime.Today;
+                                <li class="list-group-item">
+                                    <strong>Loan Date:</strong> @loan.LoanDate<br />
+                                    <strong>Due Date:</strong> @loan.DueDate<br />
+                                    <strong>Return Date:</strong> @loan.ReturnDate<br />
+                                    <strong>Status:</strong> @(isAvailable ? "Available" : "Unavailable")
+                                </li>
+                            }
                         </ul>
                     }
                     else
@@ -128,7 +130,6 @@
                     <p>Ready to loan.</p>
                 }
             </div>
-
 
 
         </div>
