@@ -21,6 +21,11 @@ namespace Web.Controllers
         private readonly BaseRepository<Category> _categoryRepo;
         private readonly BaseRepository<Publisher> _publisherRepo;
         private readonly BaseRepository<Review> _reviewRepo;
+        private readonly BaseRepository<User> _userRepo;
+        private readonly BaseRepository<Loan> _loanRepo;
+
+
+
 
         public BookController(
             BaseRepository<Book> bookRepo,
@@ -29,7 +34,10 @@ namespace Web.Controllers
             BaseRepository<BookCategory> bookCategoryRepo,
             BaseRepository<Category> categoryRepo,
             BaseRepository<Publisher> publisherRepo,
-            BaseRepository<Review> reviewRepo)
+            BaseRepository<Review> reviewRepo,
+            BaseRepository<User> userRepo,
+            BaseRepository<Loan> loanRepo
+            )
         {
             _bookRepo = bookRepo;
             _authorRepo = authorRepo;
@@ -38,6 +46,8 @@ namespace Web.Controllers
             _categoryRepo = categoryRepo;
             _publisherRepo = publisherRepo;
             _reviewRepo = reviewRepo;
+            _userRepo = userRepo;
+            _loanRepo = loanRepo;
         }
 
         private bool IsAuthorized()
@@ -56,16 +66,15 @@ namespace Web.Controllers
         [HttpPost]
         public IActionResult AddReview(int bookId, string comment, int rating)
         {
-            // Get the logged-in user's ID from the session
+            // Get the logged-in user's ID and username from the session
             var userId = HttpContext.Session.GetString("loggedUserId");
+            var userName = HttpContext.Session.GetString("loggedUserName");
 
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(userName))
             {
                 TempData["Error"] = "You need to be logged in to add a review.";
                 return RedirectToAction("Details", new { id = bookId });
             }
-
-
 
             if (rating < 1 || rating > 5 || string.IsNullOrWhiteSpace(comment))
             {
@@ -94,7 +103,7 @@ namespace Web.Controllers
             return RedirectToAction("Details", new { id = bookId });
         }
 
-        [HttpPost]
+
         [HttpPost]
         public IActionResult DeleteReview(int reviewId)
         {
@@ -140,20 +149,27 @@ namespace Web.Controllers
             return userRole == 1 || userRole == 2; // Admin (1) or Moderator (2)
         }
 
-
-        [HttpGet]
-        public IActionResult Books(string search, string filterBy)
+        public IActionResult Books(string search, string filterBy, string statusFilter)
         {
             var books = _bookRepo.GetAll()
-                .Select(b => new Book
+                .Select(b => new
                 {
-                    Id = b.Id,
-                    Title = b.Title,
-                    CoverImagePath = b.CoverImagePath,
-                    ISBN = b.ISBN,
-                    Publisher = b.Publisher,
+                    Book = b,
+                    LatestLoan = _loanRepo.GetAll()
+                        .Where(l => l.BookId == b.Id)
+                        .OrderByDescending(l => l.Id)
+                        .FirstOrDefault()
+                })
+                .Select(b => new
+                {
+                    b.Book.Id,
+                    b.Book.Title,
+                    b.Book.CoverImagePath,
+                    b.Book.ISBN,
+                    b.Book.Publisher,
+                    IsAvailable = b.LatestLoan == null || b.LatestLoan.ReturnDate.HasValue,
                     BookAuthors = _bookAuthorRepo.GetAll()
-                        .Where(ba => ba.BookId == b.Id)
+                        .Where(ba => ba.BookId == b.Book.Id)
                         .Select(ba => new BookAuthor
                         {
                             Author = _authorRepo.FirstOrDefault(a => a.Id == ba.AuthorId)
@@ -175,8 +191,43 @@ namespace Web.Controllers
                 };
             }
 
-            return View(books);
+            if (!string.IsNullOrEmpty(statusFilter))
+            {
+                books = books.Where(b =>
+                    (statusFilter == "Available" && b.IsAvailable) ||
+                    (statusFilter == "Unavailable" && !b.IsAvailable)
+                ).ToList();
+            }
+
+            return View(books.Select(b => new Book
+            {
+                Id = b.Id,
+                Title = b.Title,
+                CoverImagePath = b.CoverImagePath,
+                ISBN = b.ISBN,
+                Publisher = b.Publisher,
+                BookAuthors = b.BookAuthors
+            }).ToList());
         }
+
+
+
+        private bool IsBookAvailable(Book book)
+        {
+            var lastLoan = _loanRepo.GetAll()
+                .Where(l => l.BookId == book.Id)
+                .OrderByDescending(l => l.LoanDate)
+                .FirstOrDefault();
+
+            if (lastLoan == null || lastLoan.ReturnDate == null || lastLoan.ReturnDate.ToString() == "N/A")
+            {
+                return false; // Assuming that if ReturnDate is "N/A", the book is unavailable.
+            }
+
+            return lastLoan.ReturnDate >= DateTime.Today;
+        }
+
+
 
         [HttpGet]
         public IActionResult Details(int id)
@@ -189,8 +240,28 @@ namespace Web.Controllers
             }
 
             var reviews = _reviewRepo.GetAll()
-                .Where(r => r.BookId == id)
+            .Where(r => r.BookId == id)
+            .Select(r => new
+            {
+                r.Id,
+                r.Comment,
+                r.Rating,
+                UserName = GetUserNameById(r.UserId) // Fetch username for each review
+            })
+            .ToList();
+
+            var loans = _loanRepo.GetAll()
+                .Where(l => l.BookId == id)
+                .OrderBy(l => l.LoanDate)
                 .ToList();
+
+            var loanDates = loans.Select(l => new
+            {
+                LoanDate = l.LoanDate.ToString("yyyy-MM-dd"),
+                DueDate = l.DueDate.ToString("yyyy-MM-dd"),
+                ReturnDate = l.ReturnDate?.ToString("yyyy-MM-dd") ?? "N/A",
+                UserName = GetUserNameById(l.UserId)
+            }).ToList();
 
             var bookAuthors = _bookAuthorRepo.GetAll()
                 .Where(ba => ba.BookId == id)
@@ -202,8 +273,9 @@ namespace Web.Controllers
                 .Select(bc => _categoryRepo.FirstOrDefault(c => c.Id == bc.CategoryId).Name)
                 .ToList();
 
-            ViewBag.UserRole = HttpContext.Session.GetInt32("UserRole"); 
+            ViewBag.UserRole = HttpContext.Session.GetInt32("UserRole");
             ViewBag.UserId = HttpContext.Session.GetString("loggedUserId");
+            ViewBag.LoanDates = loanDates;
 
             var model = new
             {
@@ -213,11 +285,21 @@ namespace Web.Controllers
                 Summary = book.Summary,
                 Authors = bookAuthors,
                 Categories = bookCategories,
-                Reviews = reviews
+                Reviews = reviews,
+                Loans = loans
             };
 
             return View(model);
         }
+
+
+        private string GetUserNameById(int userId)
+        {
+            // Fetch the username from the user repository or database
+            var user = _userRepo.FirstOrDefault(u => u.Id == userId);
+            return user != null ? user.Name : "Unknown User";
+        }
+
 
 
         [HttpGet]

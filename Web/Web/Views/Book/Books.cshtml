@@ -9,14 +9,21 @@
 <!-- Search and Filter -->
 <form method="get" class="mb-3">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <input type="text" name="search" class="form-control" placeholder="Search by Title" />
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <select name="filterBy" class="form-control">
                 <option value="">Sort By</option>
                 <option value="ISBN">ISBN</option>
                 <option value="Publisher">Publisher</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="statusFilter" class="form-control">
+                <option value="">Filter by Status</option>
+                <option value="Available">Available</option>
+                <option value="Unavailable">Unavailable</option>
             </select>
         </div>
         <div class="col-md-2">
@@ -24,6 +31,7 @@
         </div>
     </div>
 </form>
+
 
 <div class="row">
     @foreach (var book in Model)

@@ -1,4 +1,22 @@
 ﻿@model Web.ViewModels.Publishers.PublisherVM
+@inject IHttpContextAccessor ContextAccessor
+
+@{
+    int pageSize = 10; // Items per page
+    int pageNumber = ContextAccessor.HttpContext.Request.Query.ContainsKey("page")
+                     ? int.Parse(ContextAccessor.HttpContext.Request.Query["page"])
+                     : 1;
+    string searchTerm = ContextAccessor.HttpContext.Request.Query["search"].ToString();
+
+    var filteredPublishers = Model.Items
+                                  .Where(p => string.IsNullOrEmpty(searchTerm) ||
+                                              p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                                              p.Address.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                                  .ToList();
+
+    var paginatedPublishers = filteredPublishers.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+    var totalPages = (int)Math.Ceiling((double)filteredPublishers.Count() / pageSize);
+}
 
 <h1>Publishers</h1>
 
@@ -7,6 +25,11 @@
         Add New Publisher
     </a>
 </div>
+
+<form method="get" class="form-inline mb-3">
+    <input type="text" name="search" class="form-control mr-sm-2" placeholder="Search by name or address" value="@ContextAccessor.HttpContext.Request.Query["search"]">
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
 
 @if (TempData["Success"] != null)
 {
@@ -22,7 +45,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var publisher in Model.Items)
+        @foreach (var publisher in paginatedPublishers)
         {
             <tr>
                 <td>@publisher.Name</td>
@@ -41,8 +64,24 @@
         }
     </tbody>
 </table>
+
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        <li class="page-item @(pageNumber == 1 ? "disabled" : "")">
+            <a class="page-link" href="?page=@(pageNumber - 1)&search=@searchTerm">Previous</a>
+        </li>
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(pageNumber == i ? "active" : "")">
+                <a class="page-link" href="?page=@i&search=@searchTerm">@i</a>
+            </li>
+        }
+        <li class="page-item @(pageNumber == totalPages ? "disabled" : "")">
+            <a class="page-link" href="?page=@(pageNumber + 1)&search=@searchTerm">Next</a>
+        </li>
+    </ul>
+</nav>
+
 <div class="mt-3">
-    <a asp-controller="Admin" asp-action="Index" class="btn btn-primary">
-        Back
-    </a>
+    <a asp-controller="Admin" asp-action="Index" class="btn btn-primary">Back</a>
 </div>

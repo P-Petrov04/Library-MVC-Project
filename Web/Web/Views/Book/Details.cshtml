@@ -30,7 +30,7 @@
             </div>
         </div>
         <!-- Book Details Section -->
-        <div class="col-md-8">
+        <div class="col-md-4">
             <div class="book-details-info">
                 <h1 class="details-title">@Model.Title</h1>
                 <hr />
@@ -59,40 +59,78 @@
                         <span>No categories available</span>
                     }
                 </div>
-                <div class="details-summary-loan d-flex">
-                    <div class="details-summary flex-grow-1">
-                        <h5>Summary</h5>
-                        <p>
-                            @if (!string.IsNullOrEmpty(Model.Summary))
-                            {
-                                @Model.Summary
-                            }
-                            else
-                            {
-                                <span>No summary available for this book.</span>
-                            }
-                        </p>
-                    </div>
-                    <!-- Loan Form -->
-                    <div class="loan-form mt-5">
-                        <h5>Loan this Book</h5>
-                        <form method="post" asp-action="MakeLoan" asp-controller="Loan">
-                            <input type="hidden" name="BookId" value="@Model.Id" />
-                            <div class="mb-3">
-                                <label for="LoanDate" class="form-label">Loan Date</label>
-                                <input type="date" id="LoanDate" name="LoanDate" class="form-control" required />
-                            </div>
-                            <div class="mb-3">
-                                <label for="DueDate" class="form-label">Due Date</label>
-                                <input type="date" id="DueDate" name="DueDate" class="form-control" required />
-                            </div>
-                            <button type="submit" class="btn btn-success">Loan</button>
-                        </form>
-                    </div>
-
-
+                <div class="details-summary">
+                    <h5>Summary</h5>
+                    <p>
+                        @if (!string.IsNullOrEmpty(Model.Summary))
+                        {
+                            @Model.Summary
+                        }
+                        else
+                        {
+                            <span>No summary available for this book.</span>
+                        }
+                    </p>
                 </div>
             </div>
+        </div>
+        <!-- Loan Section -->
+        <div class="col-md-4">
+            <div class="loan-form">
+                <h5>Loan this Book</h5>
+                <form method="post" asp-action="MakeLoan" asp-controller="Loan">
+                    <input type="hidden" name="BookId" value="@Model.Id" />
+                    <div class="mb-3">
+                        <label for="LoanDate" class="form-label">Loan Date</label>
+                        <input type="date" id="LoanDate" name="LoanDate" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="DueDate" class="form-label">Due Date</label>
+                        <input type="date" id="DueDate" name="DueDate" class="form-control" required />
+                    </div>
+                    <button type="submit" class="btn btn-success">Loan</button>
+                </form>
+            </div>
+
+            <div class="loan-history mt-5">
+                <h5>Loan status</h5>
+                @if (ViewBag.LoanDates != null && ViewBag.LoanDates.Count > 0)
+                {
+                    // Find the loan record without a return date or with a null return date
+                    var lastLoan = (dynamic)null;
+                    foreach (var loan in ViewBag.LoanDates)
+                    {
+                        if (string.IsNullOrEmpty(loan.ReturnDate) || loan.ReturnDate == "N/A")
+                        {
+                            lastLoan = loan;
+                            break;
+                        }
+                    }
+                    if (lastLoan != null)
+                    {
+                        bool isAvailable = lastLoan.ReturnDate != "N/A" && DateTime.Parse(lastLoan.ReturnDate) >= DateTime.Today;
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <strong>Loan Date:</strong> @lastLoan.LoanDate<br />
+                                <strong>Due Date:</strong> @lastLoan.DueDate<br />
+                                <strong>Return Date:</strong> @lastLoan.ReturnDate<br />
+                                <strong>Status:</strong> @(isAvailable ? "Available" : "Unavailable")
+                            </li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>Ready to loan.</p>
+                    }
+                }
+                else
+                {
+                    <p>Ready to loan.</p>
+                }
+            </div>
+
+
+
         </div>
     </div>
 
@@ -118,7 +156,7 @@
         </div>
         <div class="col-md-6">
             <!-- Reviews Section -->
-            <div class="reviews-section mb-5">
+            <div class="reviews-section mb-5"> 
                 <h5>Reviews</h5>
                 @if (Model.Reviews != null && Model.Reviews.Count > 0)
                 {
@@ -126,7 +164,9 @@
                         @foreach (var review in Model.Reviews)
                         {
                             <li class="list-group-item">
+                                <strong>User:</strong> @review.UserName<br />
                                 <strong>Rating:</strong> @review.Rating / 5<br />
+                                
                                 <strong>Comment:</strong> @review.Comment
                                 @if (ViewBag.UserRole == 1 || ViewBag.UserRole == 2 || (ViewBag.UserId != null && review.UserId == int.Parse(ViewBag.UserId)))
                                 {
@@ -144,6 +184,8 @@
                     <p>No reviews yet for this book.</p>
                 }
             </div>
+
+
             <!-- Back Button -->
             <div class="mt-4">
                 <a href="@Url.Action("Books", "Book")" class="btn btn-outline-primary px-4 rounded-pill shadow-sm">
@@ -156,9 +198,9 @@
 
 <style>
     #book-details {
-        max-width: 1200px;
         margin: 0 auto;
         padding: 20px;
+        max-width: 100%;
     }
 
     .details-container {
@@ -177,10 +219,13 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        padding: 0;
     }
 
     .book-details-img {
         width: 75%;
+        padding: 0px;
+        margin: 0px;
         transition: transform 0.3s ease;
     }
 
@@ -197,8 +242,8 @@
         border: 1px solid #e0e0e0;
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        padding: 20px 30px;
         color: #333;
+        padding: 20px;
     }
 
     .details-title {
@@ -232,10 +277,14 @@
     }
 
     .loan-form {
-        flex: 1;
         background-color: #f9f9f9;
         border-radius: 10px;
-        padding: 20px;
+        padding: 15px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
+
+    .add-review-form{
+        margin-left: 20px;
+    }
+
 </style>

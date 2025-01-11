@@ -1,7 +1,24 @@
 ﻿@model List<Common.Entities.Book>
+@inject IHttpContextAccessor ContextAccessor
 
 @{
     ViewData["Title"] = "All Books";
+
+    int pageSize = 10; // Items per page
+    int pageNumber = ContextAccessor.HttpContext.Request.Query.ContainsKey("page")
+                     ? int.Parse(ContextAccessor.HttpContext.Request.Query["page"])
+                     : 1;
+    string searchTerm = ContextAccessor.HttpContext.Request.Query["search"].ToString();
+
+    var filteredBooks = Model
+                        .Where(b => string.IsNullOrEmpty(searchTerm) ||
+                                    b.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                                    b.ISBN.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                                    (b.Publisher != null && b.Publisher.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+    var paginatedBooks = filteredBooks.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+    var totalPages = (int)Math.Ceiling((double)filteredBooks.Count() / pageSize);
 }
 
 <h2>All Books</h2>
@@ -11,6 +28,11 @@
         Add New Book
     </a>
 </div>
+
+<form method="get" class="form-inline mb-3">
+    <input type="text" name="search" class="form-control mr-sm-2" placeholder="Search by title, ISBN, or publisher" value="@ContextAccessor.HttpContext.Request.Query["search"]">
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
 
 @if (TempData["Success"] != null)
 {
@@ -27,7 +49,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var book in Model)
+        @foreach (var book in paginatedBooks)
         {
             <tr>
                 <td>@book.Title</td>
@@ -47,6 +69,24 @@
         }
     </tbody>
 </table>
+
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        <li class="page-item @(pageNumber == 1 ? "disabled" : "")">
+            <a class="page-link" href="?page=@(pageNumber - 1)&search=@searchTerm">Previous</a>
+        </li>
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(pageNumber == i ? "active" : "")">
+                <a class="page-link" href="?page=@i&search=@searchTerm">@i</a>
+            </li>
+        }
+        <li class="page-item @(pageNumber == totalPages ? "disabled" : "")">
+            <a class="page-link" href="?page=@(pageNumber + 1)&search=@searchTerm">Next</a>
+        </li>
+    </ul>
+</nav>
+
 <div class="mt-3">
     <a asp-controller="Admin" asp-action="Index" class="btn btn-primary">
         Back

@@ -1,0 +1,82 @@
+﻿@model Web.ViewModels.Users.UserVM
+@inject IHttpContextAccessor ContextAccessor
+
+@{
+    ViewBag.Title = "User List";
+
+    int pageSize = 10; // Items per page
+    int pageNumber = ContextAccessor.HttpContext.Request.Query.ContainsKey("page")
+                     ? int.Parse(ContextAccessor.HttpContext.Request.Query["page"])
+                     : 1;
+    string searchTerm = ContextAccessor.HttpContext.Request.Query["search"].ToString();
+
+    var filteredUsers = Model.Items
+                             .Where(u => string.IsNullOrEmpty(searchTerm) ||
+                                         u.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                                         u.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                                         u.RoleId.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                             .ToList();
+
+    var paginatedUsers = filteredUsers.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+    var totalPages = (int)Math.Ceiling((double)filteredUsers.Count() / pageSize);
+}
+
+<h2>User List</h2>
+
+<form method="get" class="form-inline mb-3">
+    <input type="text" name="search" class="form-control mr-sm-2" placeholder="Search by name, email, or role" value="@ContextAccessor.HttpContext.Request.Query["search"]">
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in paginatedUsers)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.Name</td>
+                <td>@user.Email</td>
+                <td>@user.RoleId</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        <li class="page-item @(pageNumber == 1 ? "disabled" : "")">
+            <a class="page-link" href="?page=@(pageNumber - 1)&search=@searchTerm">Previous</a>
+        </li>
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(pageNumber == i ? "active" : "")">
+                <a class="page-link" href="?page=@i&search=@searchTerm">@i</a>
+            </li>
+        }
+        <li class="page-item @(pageNumber == totalPages ? "disabled" : "")">
+            <a class="page-link" href="?page=@(pageNumber + 1)&search=@searchTerm">Next</a>
+        </li>
+    </ul>
+</nav>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<div class="mt-3">
+    <a asp-controller="Admin" asp-action="Index" class="btn btn-primary">Back</a>
+</div>

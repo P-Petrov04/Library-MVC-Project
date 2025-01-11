@@ -2,6 +2,7 @@
 using Common.Repositories;
 using Web.ViewModels.Auth;
 using Common.Entities;
+using Web.ViewModels.Users;
 
 namespace Web.Controllers
 {
@@ -14,6 +15,30 @@ namespace Web.Controllers
         {
             _usersRepo = usersRepo;
         }
+
+        // GET: User List
+        [HttpGet]
+        public IActionResult UserList()
+        {
+            if (!IsAdmin())
+            {
+                TempData["Error"] = "You must be an admin to access this page.";
+                return RedirectToAction("Login");
+            }
+
+            var userVM = new UserVM
+            {
+                Items = _usersRepo.GetAll().ToList()
+            };
+
+            return View(userVM);
+        }
+
+        private bool IsAdmin()
+        {
+            return HttpContext.Session.GetInt32("UserRole") == 1; // Assuming 1 is the Admin RoleId
+        }
+
 
         // GET: Login Page
         [HttpGet]

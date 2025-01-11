@@ -2,6 +2,31 @@
 @inject Common.Repositories.BaseRepository<Book> BookRepo
 @inject IHttpContextAccessor ContextAccessor
 
+@{
+    int pageSize = 10; // Items per page
+    int pageNumber = ContextAccessor.HttpContext.Request.Query.ContainsKey("page")
+                     ? int.Parse(ContextAccessor.HttpContext.Request.Query["page"])
+                     : 1;
+    string searchTerm = ContextAccessor.HttpContext.Request.Query["search"].ToString();
+
+    var filteredLoans = !string.IsNullOrEmpty(searchTerm)
+                        ? Model.Where(l => BookRepo.FirstOrDefault(b => b.Id == l.BookId).Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                               .ToList()
+                        : Model;
+
+    var sortedLoans = filteredLoans.OrderBy(loan => loan.ReturnDate.HasValue ? 1 : 0)
+                                   .ThenByDescending(loan => loan.ReturnDate)
+                                   .ToList();
+
+    var paginatedLoans = sortedLoans.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+    var totalPages = (int)Math.Ceiling((double)sortedLoans.Count() / pageSize);
+}
+
+<form method="get" class="form-inline mb-3">
+    <input type="text" name="search" class="form-control mr-sm-2" placeholder="Search by book name" value="@ContextAccessor.HttpContext.Request.Query["search"]">
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
 <h1>Loans</h1>
 
 <table class="table">
@@ -14,19 +39,38 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var loan in Model)
+        @foreach (var loan in paginatedLoans)
         {
             <tr>
                 <td>@BookRepo.FirstOrDefault(b => b.Id == loan.BookId).Title</td>
                 <td>@loan.LoanDate.ToString("dd-MM-yyyy")</td>
                 <td>@loan.DueDate.ToString("dd-MM-yyyy")</td>
-                @if(loan.ReturnDate == null){
+                @if (loan.ReturnDate == null)
+                {
                     <td>None</td>
                 }
-                else{
+                else
+                {
                     <td>@loan.ReturnDate.Value.ToString("dd-MM-yyyy")</td>
                 }
             </tr>
         }
     </tbody>
 </table>
+
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        <li class="page-item @(pageNumber == 1 ? "disabled" : "")">
+            <a class="page-link" href="?page=@(pageNumber - 1)&search=@searchTerm">Previous</a>
+        </li>
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(pageNumber == i ? "active" : "")">
+                <a class="page-link" href="?page=@i&search=@searchTerm">@i</a>
+            </li>
+        }
+        <li class="page-item @(pageNumber == totalPages ? "disabled" : "")">
+            <a class="page-link" href="?page=@(pageNumber + 1)&search=@searchTerm">Next</a>
+        </li>
+    </ul>
+</nav>

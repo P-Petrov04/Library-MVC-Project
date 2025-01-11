@@ -1,6 +1,33 @@
 ﻿@model Web.ViewModels.Loans.LoanVM
 @inject Common.Repositories.BaseRepository<Book> BookRepo
 @inject Common.Repositories.BaseRepository<User> UserRepo
+@inject IHttpContextAccessor ContextAccessor
+
+@{
+    int pageSize = 10; // Items per page
+    int pageNumber = ContextAccessor.HttpContext.Request.Query.ContainsKey("page")
+                     ? int.Parse(ContextAccessor.HttpContext.Request.Query["page"])
+                     : 1;
+    string searchTerm = ContextAccessor.HttpContext.Request.Query["search"].ToString();
+
+    var filteredLoans = Model.Items
+                            .Where(l => (string.IsNullOrEmpty(searchTerm) ||
+                                         BookRepo.FirstOrDefault(b => b.Id == l.BookId).Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                                         UserRepo.FirstOrDefault(u => u.Id == l.UserId).Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)))
+                            .ToList();
+
+    var sortedLoans = filteredLoans.OrderByDescending(loan => loan.ReturnDate ?? DateTime.MaxValue)
+                                   .ThenByDescending(loan => loan.ReturnDate.HasValue ? 0 : 1)
+                                   .ToList();
+
+    var paginatedLoans = sortedLoans.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+    var totalPages = (int)Math.Ceiling((double)sortedLoans.Count() / pageSize);
+}
+
+<form method="get" class="form-inline mb-3">
+    <input type="text" name="search" class="form-control mr-sm-2" placeholder="Search by book name or user name" value="@ContextAccessor.HttpContext.Request.Query["search"]">
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
 
 <h1>Loans</h1>
 
@@ -11,28 +38,56 @@
             <th>User</th>
             <th>Loan Date</th>
             <th>Due Date</th>
+            <th>Return Date</th>
+            <th>Status</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var loan in Model.Items)
+        @foreach (var loan in paginatedLoans)
         {
+            bool isAvailable = loan.ReturnDate.HasValue && loan.ReturnDate.Value.Date >= DateTime.Today;
+
             <tr>
                 <td>@BookRepo.FirstOrDefault(b => b.Id == loan.BookId).Title</td>
                 <td>@UserRepo.FirstOrDefault(u => u.Id == loan.UserId).Name</td>
-                <td>@loan.LoanDate.Date.ToString("dd-MM-yyyy")</td>
-                <td>@loan.DueDate.Date.ToString("dd-MM-yyyy")</td>
+                <td>@loan.LoanDate.ToString("dd-MM-yyyy")</td>
+                <td>@loan.DueDate.ToString("dd-MM-yyyy")</td>
+                <td>@loan.ReturnDate?.ToString("dd-MM-yyyy")</td>
                 <td>
-                    <form asp-action="ReturnBook" asp-controller="Loan" method="post" class="d-inline">
-                        <input type="hidden" name="id" value="@loan.Id" />
-                        <button type="submit" class="btn btn-danger btn-sm">Return</button>
-                    </form>
+                    <strong>Status:</strong> @(loan.ReturnDate.HasValue ? "Returned" : "Loaned")
+                </td>
+                <td>
+                    @if (!loan.ReturnDate.HasValue)
+                    {
+                        <form asp-action="ReturnBook" asp-controller="Loan" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@loan.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">Return</button>
+                        </form>
+                    }
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        <li class="page-item @(pageNumber == 1 ? "disabled" : "")">
+            <a class="page-link" href="?page=@(pageNumber - 1)&search=@searchTerm">Previous</a>
+        </li>
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(pageNumber == i ? "active" : "")">
+                <a class="page-link" href="?page=@i&search=@searchTerm">@i</a>
+            </li>
+        }
+        <li class="page-item @(pageNumber == totalPages ? "disabled" : "")">
+            <a class="page-link" href="?page=@(pageNumber + 1)&search=@searchTerm">Next</a>
+        </li>
+    </ul>
+</nav>
+
 <div class="mt-3">
-    <a asp-controller="Admin" asp-action="Index" class="btn btn-primary">
-        Back
-    </a>
+    <a asp-controller="Admin" asp-action="Index" class="btn btn-primary">Back</a>
 </div>

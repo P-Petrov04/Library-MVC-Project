@@ -40,12 +40,18 @@ namespace Web.Controllers
                 return UnauthorizedRedirect();
             }
 
-            LoanVM model = new LoanVM()
+            var loans = _loanRepo.GetAll()
+                                 .OrderBy(l => l.ReturnDate.HasValue)
+                                 .ThenByDescending(l => l.LoanDate); // Newer loans first within each status group
+
+            var model = new LoanVM
             {
-                Items = _loanRepo.GetAll().Where(l => l.ReturnDate == null)
+                Items = loans
             };
+
             return View(model);
         }
+
 
         public IActionResult CurrentUserLoans()
         {
@@ -129,10 +135,17 @@ namespace Web.Controllers
             }
 
             Loan curr = _loanRepo.FirstOrDefault(l => l.Id == id);
-            curr.ReturnDate = DateTime.Now;
+            if (curr == null)
+            {
+                TempData["Error"] = "Loan not found.";
+                return RedirectToAction("Index");
+            }
 
+            curr.ReturnDate = DateTime.Now;
             _loanRepo.Update(curr);
+
             return RedirectToAction("Index");
         }
+
     }
 }
