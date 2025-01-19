@@ -11,76 +11,34 @@
     <link rel="stylesheet" href="~/css/user/admin.css" asp-append-version="true" />
 }
 
-<div class="admin-dashboard">
+<div class="d-flex">
     <!-- Sidebar -->
-    <div class="sidebar">
-        <h3>Admin Dashboard</h3>
-        <ul class="menu">
-            <li>
-                <a href="/Admin/RegisterUser" class="menu-link dynamic-link">Register User/Moderator</a>
-            </li>
-            <li>
-                <a href="/Tag/Index" class="menu-link dynamic-link">Manage Tags</a>
-            </li>
-            <li>
-                <a href="/Category/Index" class="menu-link dynamic-link">Manage Categories</a>
-            </li>
-            <li>
-                <a href="/Publisher/Index" class="menu-link dynamic-link">Manage Publishers</a>
-            </li>
-            <li>
-                <a href="/Author/Index" class="menu-link dynamic-link">Manage Authors</a>
-            </li>
-            <li>
-                <a href="/Book/Index" class="menu-link dynamic-link">Manage Books</a>
-            </li>
-            <li>
-                <a href="/Loan/Index" class="menu-link dynamic-link">Manage Loans</a>
-            </li>
-            <li>
-                <a href="/Auth/UserList" class="menu-link dynamic-link">Manage Users</a>
-            </li>
-        </ul>
+    <div class="sidebar card p-3 me-4" style="width: 250px;">
+        <h4 class="mb-4">Admin Dashboard</h4>
+        <a href="@Url.Action("RegisterUser", "Admin")" class="btn btn-light w-100 text-start mb-2">Register User/Moderator</a>
+        <a href="@Url.Action("Index", "Tag")" class="btn btn-light w-100 text-start mb-2">Manage Tags</a>
+        <a href="@Url.Action("Index", "Category")" class="btn btn-light w-100 text-start mb-2">Manage Categories</a>
+        <a href="@Url.Action("Index", "Publisher")" class="btn btn-light w-100 text-start mb-2">Manage Publishers</a>
+        <a href="@Url.Action("Index", "Author")" class="btn btn-light w-100 text-start mb-2">Manage Authors</a>
+        <a href="@Url.Action("Index", "Book")" class="btn btn-light w-100 text-start mb-2">Manage Books</a>
+        <a href="@Url.Action("Index", "Loan")" class="btn btn-light w-100 text-start mb-2">Manage Loans</a>
+        <a href="@Url.Action("UserList", "Auth")" class="btn btn-light w-100 text-start mb-2">Manage Users</a>
     </div>
 
-    <!-- Content Area -->
-    <div class="content-area">
-        <div id="content-placeholder">
-            <h2>Dashboard</h2>
-            <p>Select a menu item to manage content.</p>
+    <!-- Main Content -->
+    <div class="content flex-grow-1">
+        <div class="card p-4">
+            <h3 class="mb-4">Welcome to the Admin Panel</h3>
+            <p>
+                Manage the platform effectively using the menu on the left. Here’s a quick overview:
+            </p>
+            <ul>
+                <li>Total Users: <strong>120</strong></li>
+                <li>Total Books: <strong>350</strong></li>
+                <li>Total Loans: <strong>75</strong></li>
+            </ul>
+            <p class="mt-4 text-muted">Click on a menu item to get started!</p>
         </div>
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const links = document.querySelectorAll(".dynamic-link");
-            const placeholder = document.getElementById("content-placeholder");
-
-            links.forEach(link => {
-                link.addEventListener("click", function (e) {
-                    e.preventDefault(); // Prevent page reload
-
-                    // Show loading indicator
-                    placeholder.innerHTML = '<p>Loading...</p>';
-
-                    // Fetch content dynamically
-                    const url = this.getAttribute("href");
-                    fetch(url)
-                        .then(response => {
-                            if (!response.ok) throw new Error("Network response was not ok");
-                            return response.text();
-                        })
-                        .then(html => {
-                            placeholder.innerHTML = html; // Inject content
-                        })
-                        .catch(error => {
-                            console.error("Error loading content:", error);
-                            placeholder.innerHTML = '<p class="text-danger">Error loading content.</p>';
-                        });
-                });
-            });
-        });
-    </script>
-}
