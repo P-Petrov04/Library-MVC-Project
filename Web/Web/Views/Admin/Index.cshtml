@@ -11,34 +11,30 @@
     <link rel="stylesheet" href="~/css/user/admin.css" asp-append-version="true" />
 }
 
-<div class="d-flex">
-    <!-- Sidebar -->
-    <div class="sidebar card p-3 me-4" style="width: 250px;">
-        <h4 class="mb-4">Admin Dashboard</h4>
-        <a href="@Url.Action("RegisterUser", "Admin")" class="btn btn-light w-100 text-start mb-2">Register User/Moderator</a>
-        <a href="@Url.Action("Index", "Tag")" class="btn btn-light w-100 text-start mb-2">Manage Tags</a>
-        <a href="@Url.Action("Index", "Category")" class="btn btn-light w-100 text-start mb-2">Manage Categories</a>
-        <a href="@Url.Action("Index", "Publisher")" class="btn btn-light w-100 text-start mb-2">Manage Publishers</a>
-        <a href="@Url.Action("Index", "Author")" class="btn btn-light w-100 text-start mb-2">Manage Authors</a>
-        <a href="@Url.Action("Index", "Book")" class="btn btn-light w-100 text-start mb-2">Manage Books</a>
-        <a href="@Url.Action("Index", "Loan")" class="btn btn-light w-100 text-start mb-2">Manage Loans</a>
-        <a href="@Url.Action("UserList", "Auth")" class="btn btn-light w-100 text-start mb-2">Manage Users</a>
+<div class="dashboard-container">
+    <div class="dashboard-sidebar">
+        <h4>Admin Dashboard</h4>
+        <a href="/Admin/RegisterUser" class="sidebar-btn">Register User/Moderator</a>
+        <a href="/Tag/Index" class="sidebar-btn">Manage Tags</a>
+        <a href="/Category/Index" class="sidebar-btn">Manage Categories</a>
+        <a href="/Publisher/Index" class="sidebar-btn">Manage Publishers</a>
+        <a href="/Author/Index" class="sidebar-btn">Manage Authors</a>
+        <a href="/Book/Index" class="sidebar-btn">Manage Books</a>
+        <a href="/Loan/Index" class="sidebar-btn">Manage Loans</a>
+        <a href="/Auth/UserList" class="sidebar-btn">Manage Users</a>
     </div>
 
-    <!-- Main Content -->
-    <div class="content flex-grow-1">
-        <div class="card p-4">
-            <h3 class="mb-4">Welcome to the Admin Panel</h3>
-            <p>
-                Manage the platform effectively using the menu on the left. Here’s a quick overview:
-            </p>
-            <ul>
-                <li>Total Users: <strong>120</strong></li>
-                <li>Total Books: <strong>350</strong></li>
-                <li>Total Loans: <strong>75</strong></li>
-            </ul>
-            <p class="mt-4 text-muted">Click on a menu item to get started!</p>
-        </div>
+    <div class="dashboard-content">
+        <h2>Welcome to the Admin Panel</h2>
+        <p>
+            Manage the platform effectively using the menu on the left. Here's a quick overview:
+        </p>
+        <ul>
+            <li><strong>Total Users:</strong> 120</li>
+            <li><strong>Total Books:</strong> 350</li>
+            <li><strong>Total Loans:</strong> 75</li>
+        </ul>
+        <p>Click on a menu item to get started!</p>
     </div>
 </div>
 
