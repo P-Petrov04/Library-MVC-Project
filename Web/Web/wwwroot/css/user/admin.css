@@ -1,2 +1,70 @@
-﻿body {
+﻿/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f7fa;
+}
+
+/* Dashboard Layout */
+.admin-dashboard {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    background-color: #ffffff;
+    padding: 1rem;
+    width: 250px;
+    border-right: 1px solid #ddd;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+    .sidebar h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+.menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .menu li {
+        margin-bottom: 1rem;
+    }
+
+.menu-link {
+    text-decoration: none;
+    display: block;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    color: #333;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .menu-link:hover {
+        background-color: #e9ecef;
+        transform: translateY(-2px);
+    }
+
+/* Content Area */
+.content-area {
+    flex: 1;
+    padding: 2rem;
+    background-color: #f5f7fa;
+}
+
+#content-placeholder {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    min-height: 300px;
 }
