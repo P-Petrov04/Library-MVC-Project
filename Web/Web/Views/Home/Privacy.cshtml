@@ -1,6 +1,68 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/home/Privacy.css" asp-append-version="true" />
+}
 
-<p>Use this page to detail your site's privacy policy.</p>
+<section id="privacy-policy" class="py-3">
+    <div class="container">
+        <h1 class="text-center mb-4 text-primary fw-bold">Privacy Policy</h1>
+        <p class="lead text-center mb-5">Your privacy is important to us. This document explains how we collect, use, and safeguard your information.</p>
+
+        <!-- Privacy Cards -->
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="privacy-card text-center shadow-sm p-4">
+                    <div class="icon-wrapper mb-3">
+                        <i class="bi bi-shield-lock fs-1 text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold">Data Security</h5>
+                    <p>We protect your data with advanced encryption technologies to ensure its security.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="privacy-card middle-card text-center shadow-sm p-4">
+                    <div class="icon-wrapper mb-3">
+                        <i class="bi bi-file-earmark-text fs-1 text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold">Transparent Policies</h5>
+                    <p>We are transparent about how we collect, use, and share your data.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="privacy-card text-center shadow-sm p-4">
+                    <div class="icon-wrapper mb-3">
+                        <i class="bi bi-person-check fs-1 text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold">User Control</h5>
+                    <p>You have full control over your personal information and can request changes at any time.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="mt-5">
+            <h3 class="text-center fw-bold text-primary">Frequently Asked Questions</h3>
+            <ul class="faq-list mt-4">
+                <li class="mb-3">
+                    <strong>Q:</strong> What kind of data do you collect?<br>
+                    <strong>A:</strong> We collect account information, browsing data, and any details you provide voluntarily.
+                </li>
+                <li class="mb-3">
+                    <strong>Q:</strong> How is my data used?<br>
+                    <strong>A:</strong> Your data is used to enhance your experience, provide personalized features, and ensure security.
+                </li>
+                <li>
+                    <strong>Q:</strong> Can I request my data to be deleted?<br>
+                    <strong>A:</strong> Absolutely! Contact our support team, and we’ll assist with your request.
+                </li>
+            </ul>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="text-center mt-5">
+            <p class="text-muted">Have additional questions? <a href="/Contact" class="text-primary fw-bold">Reach out to us</a>.</p>
+        </div>
+    </div>
+</section>

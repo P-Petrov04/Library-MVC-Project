@@ -1,29 +1,131 @@
-﻿<link rel="stylesheet" href="~/Contact/contact.css" />
-@{
-    ViewData["Title"] = "Contact Us";
+﻿@model Web.ViewModels.ContactFormVM
+@section Styles {
+    <link rel="stylesheet" href="~/css/contact/contact.css" asp-append-version="true" />
 }
 
-<h1>Contact Us</h1>
+<!-- Contact Us Header -->
+<section id="contact-header" class="py-4 text-center">
+    <h1 class="fw-bold text-primary">Contact Us</h1>
+    <p class="text-muted fs-5">We work 24/7 to assist you! Get in touch via any of the methods below.</p>
+</section>
 
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["Success"]
+<!-- Working Hours Section -->
+<section id="working-hours" class="py-5">
+    <div class="container text-center">
+        <div class="row justify-content-center g-4">
+            <div class="col-md-3">
+                <div class="working-item">
+                    <i class="bi bi-calendar-week text-primary fs-3 mb-2"></i>
+                    <h6 class="fw-bold">Monday - Friday</h6>
+                    <p>24/7 Open</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="working-item">
+                    <i class="bi bi-calendar-event text-primary fs-3 mb-2"></i>
+                    <h6 class="fw-bold">Saturday</h6>
+                    <p>24/7 Open</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="working-item">
+                    <i class="bi bi-calendar-x text-primary fs-3 mb-2"></i>
+                    <h6 class="fw-bold">Sunday</h6>
+                    <p>24/7 Open</p>
+                </div>
+            </div>
+        </div>
     </div>
-}
+</section>
 
-<form method="post" asp-action="Submit">
-    <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" name="name" required placeholder="Your Name">
+<!-- Contact Info Accordion -->
+<section id="contact-info" class="py-5">
+    <div class="container">
+        <div class="accordion" id="contactAccordion">
+            <!-- Our Location -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingLocation">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLocation" aria-expanded="true" aria-controls="collapseLocation">
+                        Our Location
+                    </button>
+                </h2>
+                <div id="collapseLocation" class="accordion-collapse collapse show" aria-labelledby="headingLocation" data-bs-parent="#contactAccordion">
+                    <div class="accordion-body">
+                        <p>123 Library Street, Knowledge City</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Call Us -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingCall">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCall" aria-expanded="false" aria-controls="collapseCall">
+                        Call Us
+                    </button>
+                </h2>
+                <div id="collapseCall" class="accordion-collapse collapse" aria-labelledby="headingCall" data-bs-parent="#contactAccordion">
+                    <div class="accordion-body">
+                        <p>+1 (555) 123-4567</p>
+                        <p>24/7 Open</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Email Us -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingEmail">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEmail" aria-expanded="false" aria-controls="collapseEmail">
+                        Email Us
+                    </button>
+                </h2>
+                <div id="collapseEmail" class="accordion-collapse collapse" aria-labelledby="headingEmail" data-bs-parent="#contactAccordion">
+                    <div class="accordion-body">
+                        <p>support@yourlibrary.com</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" class="form-control" id="email" name="email" required placeholder="Your Email">
+</section>
+
+<!-- Contact Form Section -->
+<section id="contact-form" class="py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-4">Send Us a Message</h2>
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success text-center">
+                @TempData["Success"]
+            </div>
+        }
+        <form asp-action="Submit" method="post" class="row g-3">
+            <div class="col-md-6">
+                <label for="name" class="form-label fw-bold">Your Name</label>
+                <input asp-for="Name" class="form-control" id="name" placeholder="Enter your name" required />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label for="email" class="form-label fw-bold">Your Email</label>
+                <input asp-for="Email" class="form-control" id="email" placeholder="Enter your email" required />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="col-12">
+                <label for="message" class="form-label fw-bold">Your Message</label>
+                <textarea asp-for="Message" class="form-control" id="message" rows="4" placeholder="Enter your message" required></textarea>
+                <span asp-validation-for="Message" class="text-danger"></span>
+            </div>
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-primary px-5">Send Message</button>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <label for="message">Message</label>
-        <textarea class="form-control" id="message" name="message" rows="4" required placeholder="Your Message"></textarea>
+</section>
+
+<!-- Social Media -->
+<section id="social-media" class="py-4 text-center">
+    <h6 class="fw-bold">Follow Us</h6>
+    <div class="d-flex justify-content-center gap-3">
+        <a href="#" class="text-dark fs-4"><i class="bi bi-facebook"></i></a>
+        <a href="#" class="text-dark fs-4"><i class="bi bi-twitter"></i></a>
+        <a href="#" class="text-dark fs-4"><i class="bi bi-instagram"></i></a>
+        <a href="#" class="text-dark fs-4"><i class="bi bi-linkedin"></i></a>
     </div>
-    <button type="submit" class="btn btn-primary mt-3">Submit</button>
-</form>
+</section>

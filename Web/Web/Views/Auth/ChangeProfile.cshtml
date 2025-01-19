@@ -4,30 +4,39 @@
     ViewData["Title"] = "Change Profile";
 }
 
-<h2>Change Profile</h2>
+<h2 class="text-center mt-5">Change Profile</h2>
 
 @if (TempData["Success"] != null)
 {
-    <p class="text-success">@TempData["Success"]</p>
+    <p class="text-success text-center">@TempData["Success"]</p>
 }
 
 @if (TempData["Error"] != null)
 {
-    <p class="text-danger">@TempData["Error"]</p>
+    <p class="text-danger text-center">@TempData["Error"]</p>
 }
 
-<form action="/Auth/ChangeProfile" method="post">
-    <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="Name" value="@Model.Name" class="form-control" />
+@section Styles {
+    <link rel="stylesheet" href="~/css/auth/changep.css" asp-append-version="true" />
+}
+
+<div class="container">
+    <div class="profile-card">
+        <h3 class="text-center">Update Your Profile</h3>
+        <form action="/Auth/ChangeProfile" method="post">
+            <div class="form-group mb-3">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="Name" value="@Model.Name" class="form-control" placeholder="Enter your name">
+            </div>
+            <div class="form-group mb-3">
+                <label for="password">New Password</label>
+                <input type="password" id="password" name="Password" class="form-control" placeholder="Enter new password">
+            </div>
+            <div class="form-group mb-4">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="ConfirmPassword" class="form-control" placeholder="Confirm new password">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Update Profile</button>
+        </form>
     </div>
-    <div class="form-group">
-        <label for="password">New Password</label>
-        <input type="password" id="password" name="Password" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label for="confirmPassword">Confirm Password</label>
-        <input type="password" id="confirmPassword" name="ConfirmPassword" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary">Update Profile</button>
-</form>
+</div>

@@ -18,7 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\" />
+    <None Include="wwwroot\css\contact\contact.css" />
+    <None Include="wwwroot\css\home\home.css" />
+    <None Include="wwwroot\css\home\Privacy.css" />
+    <None Include="wwwroot\css\layout\layout.css" />
   </ItemGroup>
 
 </Project>

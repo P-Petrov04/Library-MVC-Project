@@ -4,41 +4,44 @@
     ViewData["Title"] = "All Books";
 }
 
-<h1 class="text-center">All Books</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Books/books.css" asp-append-version="true" />
+}
 
-<!-- Search and Filter -->
-<form method="get" class="mb-3">
-    <div class="row">
-        <div class="col-md-4">
-            <input type="text" name="search" class="form-control" placeholder="Search by Title" />
-        </div>
-        <div class="col-md-3">
-            <select name="filterBy" class="form-control">
-                <option value="">Sort By</option>
-                <option value="ISBN">ISBN</option>
-                <option value="Publisher">Publisher</option>
-            </select>
-        </div>
-        <div class="col-md-3">
-            <select name="statusFilter" class="form-control">
-                <option value="">Filter by Status</option>
-                <option value="Available">Available</option>
-                <option value="Unavailable">Unavailable</option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary">Apply</button>
-        </div>
-    </div>
+<h1 class="text-center mb-4">All Books</h1>
+
+<!-- Search and Filter Section -->
+<form method="get" class="mb-4">
+    <input type="text" name="search" class="form-control" placeholder="Search by Title" />
+    <select name="filterBy" class="form-control">
+        <option value="">Sort By</option>
+        <option value="ISBN">ISBN</option>
+        <option value="Publisher">Publisher</option>
+    </select>
+    <select name="statusFilter" class="form-control">
+        <option value="">Filter by Status</option>
+        <option value="Available">Available</option>
+        <option value="Unavailable">Unavailable</option>
+    </select>
+    <button type="submit" class="btn btn-primary">
+        <i class="bi bi-funnel"></i> Apply
+    </button>
 </form>
 
+<!-- Books Banner -->
+<div class="books-banner">
+    <h2>Discover a World of Knowledge</h2>
+    <p>Find your next great read among our extensive collection of books, carefully curated for all ages and interests.</p>
+    <a href="#books-section" class="scroll-arrow">Explore More</a>
+</div>
 
-<div class="row">
+<!-- Books Grid -->
+<div id="books-section" class="row g-4 px-3">
     @foreach (var book in Model)
     {
-        <div class="col-md-3 mb-4">
-            <div class="card h-100">
-                <a href="@Url.Action("Details", "Book", new { id = book.Id })">
+        <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+            <div class="card book-card h-100 shadow-sm">
+                <a href="@Url.Action("Details", "Book", new { id = book.Id })" class="text-decoration-none">
                     @if (!string.IsNullOrEmpty(book.CoverImagePath))
                     {
                         <img src="~/images/@book.CoverImagePath" class="book-img" alt="Book Cover" />
@@ -47,8 +50,8 @@
                     {
                         <img src="~/images/default.png" class="book-img" alt="Default Cover" />
                     }
-                    <div class="card-body text-center">
-                        <h5 class="card-title">@book.Title</h5>
+                    <div class="card-body">
+                        <h6 class="card-title text-truncate">@book.Title</h6>
                         <p class="card-text">
                             <strong>Authors:</strong>
                             @string.Join(", ", book.BookAuthors.Select(ba => ba.Author.Name))

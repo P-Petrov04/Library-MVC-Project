@@ -1,0 +1,98 @@
+﻿/* Privacy Policy Section Styling */
+#privacy-policy {
+    background-color: #f8f9fa;
+}
+
+/* Privacy Cards */
+.privacy-card {
+    border: 2px solid #dee2e6; /* Default light gray border */
+    border-radius: 8px;
+    background-color: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    height: 100%; /* Equal height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+    .privacy-card:hover {
+        transform: translateY(-5px); /* Lift on hover */
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* Soft shadow */
+        border-color: #0d6efd; /* Blue border on hover */
+    }
+
+    /* Middle Card Always Highlighted */
+    .privacy-card.middle-card {
+        border-color: #0d6efd; /* Always blue border */
+        box-shadow: 0 10px 15px rgba(13, 110, 253, 0.1); /* Subtle shadow */
+    }
+
+/* Card Icon Styling */
+.icon-wrapper {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #eaf4ff;
+    margin-bottom: 15px;
+}
+
+/* Card Titles */
+.privacy-card h5 {
+    font-size: 1.2rem;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #212529;
+}
+
+/* Card Descriptions */
+.privacy-card p {
+    font-size: 0.9rem;
+    color: #6c757d;
+    text-align: center;
+}
+
+/* Equal Card Heights */
+.row.g-4 {
+    display: flex;
+    align-items: stretch; /* Equal height */
+}
+
+/* FAQ Section */
+.faq-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+    .faq-list li {
+        padding: 1rem;
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .faq-list li:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            border-color: #0d6efd;
+        }
+
+/* Contact Section */
+#privacy-policy .text-center.mt-5 {
+    margin-bottom: 2rem;
+}
+
+#privacy-policy .text-muted a {
+    text-decoration: none;
+    color: #0d6efd;
+}
+
+    #privacy-policy .text-muted a:hover {
+        text-decoration: underline;
+    }

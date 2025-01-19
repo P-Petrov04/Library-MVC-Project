@@ -6,7 +6,10 @@
 @{
     ViewData["Title"] = "Admin Dashboard";
 }
-
+@section Styles {
+    <link rel="stylesheet" href="~/css/user/admin.css" asp-append-version="true" />
+}
+    
 <h2>Dashboard</h2>
 
 @if (TempData["Success"] != null)
