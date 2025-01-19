@@ -16,13 +16,13 @@
 }
 
 <div class="dashboard-container">
+    <!-- Sidebar -->
     <div class="dashboard-sidebar">
         <h4>Admin Dashboard</h4>
         @if (HttpContextAccessor.HttpContext.Session.GetInt32("UserRole") == 1)
         {
             <a href="/Auth/UserList" class="sidebar-btn">Manage Users</a>
         }
-        
         <a href="/Tag/Index" class="sidebar-btn">Manage Tags</a>
         <a href="/Category/Index" class="sidebar-btn">Manage Categories</a>
         <a href="/Publisher/Index" class="sidebar-btn">Manage Publishers</a>
@@ -31,27 +31,43 @@
         <a href="/Loan/Index" class="sidebar-btn">Manage Loans</a>
     </div>
 
+    <!-- Content -->
     <div class="dashboard-content">
-        <h2>Welcome to the Admin Panel</h2>
-        <p>
-            Manage the platform effectively using the menu on the left. Here's a quick overview:
-        </p>
-        <ul>
-            <li><strong>Total Users:</strong> @UsersRepo.GetAll().Count</li>
-            <li><strong>Total Books:</strong> @BooksRepo.GetAll().Count</li>
-            <ul><strong>Books by Category:</strong>
+        <div class="content-header">
+            <h2>Welcome to the Admin Panel</h2>
+            <p>Manage the platform effectively using the menu on the left. Here's a quick overview:</p>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card">
+                <h3>Total Users</h3>
+                <p class="count">@UsersRepo.GetAll().Count</p>
+            </div>
+            <div class="summary-card">
+                <h3>Total Books</h3>
+                <p class="count">@BooksRepo.GetAll().Count</p>
+            </div>
+            <div class="summary-card">
+                <h3>Active Loans</h3>
+                <p class="count">@LoansRepo.GetAll().Where(l => l.ReturnDate == null).Count()</p>
+            </div>
+        </div>
+
+        <!-- Books by Category -->
+        <div class="books-category">
+            <h3>Books by Category:</h3>
+            <ul>
                 @foreach (var cat in CategoriesRepo.GetAll())
-            {
-                var booksCount = BookCategoryRepo.GetAll()
+                {
+                    var booksCount = BookCategoryRepo.GetAll()
                     .Where(bc => bc.CategoryId == cat.Id)
                     .Select(bc => bc.BookId).Count();
 
-                <li><strong>@cat.Name:</strong> @booksCount</li>
-            }
+                    <li><strong>@cat.Name:</strong> @booksCount</li>
+                }
             </ul>
-            <li><strong>Active Loans:</strong> @LoansRepo.GetAll().Where(l => l.ReturnDate == null).Count()</li>
-        </ul>
-        <p>Click on a menu item to get started!</p>
+        </div>
     </div>
 </div>
 

@@ -1,13 +1,13 @@
-﻿/* General Dashboard Layout */
-.dashboard-container {
+﻿.dashboard-container {
     display: flex;
-    min-height: 100vh; /* Full height */
+    min-height: 100vh;
     background-color: #f5f7fa;
+    font-family: Arial, sans-serif;
 }
 
 /* Sidebar Styles */
 .dashboard-sidebar {
-    width: 20%; /* Fixed width for sidebar */
+    width: 20%;
     padding: 1rem;
     background-color: white;
     border-right: 1px solid #ddd;
@@ -17,6 +17,7 @@
         margin-bottom: 1.5rem;
         font-size: 1.25rem;
         font-weight: bold;
+        color: #333;
     }
 
 .sidebar-btn {
@@ -24,42 +25,82 @@
     padding: 0.75rem 1rem;
     margin-bottom: 0.5rem;
     font-size: 1rem;
-    color: black;
+    color: #333;
     text-decoration: none;
     background-color: #f8f9fa;
     border: 1px solid #ddd;
     border-radius: 4px;
     text-align: left;
+    transition: background-color 0.3s ease;
 }
 
-    .sidebar-btn:focus, .sidebar-btn:active {
-        outline: none;
+    .sidebar-btn:hover {
+        background-color: #e9ecef;
     }
 
 /* Content Area */
 .dashboard-content {
-    flex-grow: 1; /* Take all remaining space */
+    flex-grow: 1;
     padding: 2rem;
-    background-color: #f5f7fa;
 }
 
-    .dashboard-content h2 {
-        font-size: 1.75rem;
+/* Content Header */
+.content-header h2 {
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.content-header p {
+    font-size: 1rem;
+    color: #666;
+}
+
+/* Summary Cards */
+.summary-cards {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.summary-card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    flex: 1;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+    .summary-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .summary-card h3 {
+        font-size: 1.25rem;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .summary-card .count {
+        font-size: 2rem;
         font-weight: bold;
-        margin-bottom: 1rem;
+        color: #0d6efd;
     }
 
-    .dashboard-content p {
-        font-size: 1rem;
-        margin-bottom: 1rem;
-    }
+/* Books by Category Section */
+.books-category h3 {
+    font-size: 1.25rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
 
-    .dashboard-content ul {
-        list-style: disc;
-        padding-left: 2rem;
-        font-size: 1rem;
-    }
-
-        .dashboard-content ul li {
-            margin-bottom: 0.5rem;
-        }
+.books-category ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+    font-size: 1rem;
+    color: #555;
+}
