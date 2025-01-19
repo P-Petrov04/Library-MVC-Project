@@ -1,6 +1,10 @@
 ﻿@model Web.ViewModels.Users.UserVM
 @inject Common.Repositories.BaseRepository<User> UsersRepo
 @inject Common.Repositories.BaseRepository<Role> RolesRepo
+@inject Common.Repositories.BaseRepository<Book> BooksRepo
+@inject Common.Repositories.BaseRepository<Category> CategoriesRepo
+@inject Common.Repositories.BaseRepository<BookCategory> BookCategoryRepo
+@inject Common.Repositories.BaseRepository<Loan> LoansRepo
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 @{
@@ -14,14 +18,17 @@
 <div class="dashboard-container">
     <div class="dashboard-sidebar">
         <h4>Admin Dashboard</h4>
-        <a href="/Admin/RegisterUser" class="sidebar-btn">Register User/Moderator</a>
+        @if (HttpContextAccessor.HttpContext.Session.GetInt32("UserRole") == 1)
+        {
+            <a href="/Auth/UserList" class="sidebar-btn">Manage Users</a>
+        }
+        
         <a href="/Tag/Index" class="sidebar-btn">Manage Tags</a>
         <a href="/Category/Index" class="sidebar-btn">Manage Categories</a>
         <a href="/Publisher/Index" class="sidebar-btn">Manage Publishers</a>
         <a href="/Author/Index" class="sidebar-btn">Manage Authors</a>
         <a href="/Book/Index" class="sidebar-btn">Manage Books</a>
         <a href="/Loan/Index" class="sidebar-btn">Manage Loans</a>
-        <a href="/Auth/UserList" class="sidebar-btn">Manage Users</a>
     </div>
 
     <div class="dashboard-content">
@@ -30,9 +37,19 @@
             Manage the platform effectively using the menu on the left. Here's a quick overview:
         </p>
         <ul>
-            <li><strong>Total Users:</strong> 120</li>
-            <li><strong>Total Books:</strong> 350</li>
-            <li><strong>Total Loans:</strong> 75</li>
+            <li><strong>Total Users:</strong> @UsersRepo.GetAll().Count</li>
+            <li><strong>Total Books:</strong> @BooksRepo.GetAll().Count</li>
+            <ul><strong>Books by Category:</strong>
+                @foreach (var cat in CategoriesRepo.GetAll())
+            {
+                var booksCount = BookCategoryRepo.GetAll()
+                    .Where(bc => bc.CategoryId == cat.Id)
+                    .Select(bc => bc.BookId).Count();
+
+                <li><strong>@cat.Name:</strong> @booksCount</li>
+            }
+            </ul>
+            <li><strong>Active Loans:</strong> @LoansRepo.GetAll().Where(l => l.ReturnDate == null).Count()</li>
         </ul>
         <p>Click on a menu item to get started!</p>
     </div>

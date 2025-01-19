@@ -56,13 +56,13 @@
                 <td>@author.Name</td>
                 <td>@author.Bio</td>
                 <td>
+                    <form asp-action="EditAuthor" asp-controller="Author" method="get" class="d-inline">
+                        <input type="hidden" name="id" value="@author.Id" />
+                        <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+                    </form>
                     <form asp-action="DeleteAuthor" asp-controller="Author" method="post" class="d-inline">
                         <input type="hidden" name="id" value="@author.Id" />
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
-                    <form asp-action="EditAuthor" asp-controller="Author" method="get" class="d-inline">
-                        <input type="hidden" name="id" value="@author.Id" />
-                        <button type="submit" class="btn btn-danger btn-sm">Edit</button>
                     </form>
                 </td>
             </tr>

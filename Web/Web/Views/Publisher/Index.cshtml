@@ -20,16 +20,16 @@
 
 <h1>Publishers</h1>
 
+<form method="get" class="form-inline mb-3">
+    <input type="text" name="search" class="form-control mr-sm-2" placeholder="Search by name or address" value="@ContextAccessor.HttpContext.Request.Query["search"]">
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
 <div class="mt-3">
     <a asp-controller="Publisher" asp-action="AddPublisher" class="btn btn-primary">
         Add New Publisher
     </a>
 </div>
-
-<form method="get" class="form-inline mb-3">
-    <input type="text" name="search" class="form-control mr-sm-2" placeholder="Search by name or address" value="@ContextAccessor.HttpContext.Request.Query["search"]">
-    <button type="submit" class="btn btn-primary">Search</button>
-</form>
 
 @if (TempData["Success"] != null)
 {
@@ -51,13 +51,13 @@
                 <td>@publisher.Name</td>
                 <td>@publisher.Address</td>
                 <td>
+                    <form asp-action="EditPublisher" asp-controller="Publisher" method="get" class="d-inline">
+                        <input type="hidden" name="id" value="@publisher.Id" />
+                        <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+                    </form>
                     <form asp-action="DeletePublisher" asp-controller="Publisher" method="post" class="d-inline">
                         <input type="hidden" name="id" value="@publisher.Id" />
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
-                    <form asp-action="EditPublisher" asp-controller="Publisher" method="get" class="d-inline">
-                        <input type="hidden" name="id" value="@publisher.Id" />
-                        <button type="submit" class="btn btn-danger btn-sm">Edit</button>
                     </form>
                 </td>
             </tr>

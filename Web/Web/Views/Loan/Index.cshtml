@@ -24,12 +24,12 @@
     var totalPages = (int)Math.Ceiling((double)sortedLoans.Count() / pageSize);
 }
 
+<h1>Loans</h1>
+
 <form method="get" class="form-inline mb-3">
     <input type="text" name="search" class="form-control mr-sm-2" placeholder="Search by book name or user name" value="@ContextAccessor.HttpContext.Request.Query["search"]">
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
-
-<h1>Loans</h1>
 
 <table class="table">
     <thead>

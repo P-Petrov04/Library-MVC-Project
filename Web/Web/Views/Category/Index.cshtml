@@ -20,12 +20,12 @@
     var totalPages = (int)Math.Ceiling((double)filteredCategories.Count() / pageSize);
 }
 
+<h2>All Categories</h2>
+
 <form method="get" class="form-inline mb-3">
     <input type="text" name="search" class="form-control mr-sm-2" placeholder="Search by category name" value="@ContextAccessor.HttpContext.Request.Query["search"]">
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
-
-<h2>All Categories</h2>
 
 @if (TempData["Success"] != null)
 {
@@ -58,13 +58,13 @@
             <tr>
                 <td>@category.Name</td>
                 <td>
+                    <form asp-action="EditCategory" asp-controller="Category" method="get" class="d-inline">
+                        <input type="hidden" name="id" value="@category.Id" />
+                        <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+                    </form>
                     <form asp-action="DeleteCategory" asp-controller="Category" method="post" class="d-inline">
                         <input type="hidden" name="id" value="@category.Id" />
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
-                    <form asp-action="EditCategory" asp-controller="Category" method="get" class="d-inline">
-                        <input type="hidden" name="id" value="@category.Id" />
-                        <button type="submit" class="btn btn-danger btn-sm">Edit</button>
                     </form>
                 </td>
             </tr>

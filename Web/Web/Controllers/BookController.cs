@@ -68,9 +68,8 @@ namespace Web.Controllers
         {
             // Get the logged-in user's ID and username from the session
             var userId = HttpContext.Session.GetString("loggedUserId");
-            var userName = HttpContext.Session.GetString("loggedUserName");
 
-            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(userName))
+            if (string.IsNullOrEmpty(userId))
             {
                 TempData["Error"] = "You need to be logged in to add a review.";
                 return RedirectToAction("Details", new { id = bookId });

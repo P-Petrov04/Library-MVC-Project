@@ -19,12 +19,14 @@
     var totalPages = (int)Math.Ceiling((double)filteredTags.Count() / pageSize);
 }
 
+
+
+<h2>All Tags</h2>
+
 <form method="get" class="form-inline mb-3">
     <input type="text" name="search" class="form-control mr-sm-2" placeholder="Search by tag name or category name" value="@ContextAccessor.HttpContext.Request.Query["search"]">
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
-
-<h2>All Tags</h2>
 
 @if (TempData["Success"] != null)
 {
@@ -61,13 +63,13 @@
                 <td>@tag.Name</td>
                 <td>@tag.Category.Name</td>
                 <td>
+                    <form asp-action="EditTag" asp-controller="Tag" method="get" class="d-inline">
+                        <input type="hidden" name="id" value="@tag.Id" />
+                        <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+                    </form>
                     <form asp-action="DeleteTag" asp-controller="Tag" method="post" class="d-inline">
                         <input type="hidden" name="id" value="@tag.Id" />
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
-                    <form asp-action="EditTag" asp-controller="Tag" method="get" class="d-inline">
-                        <input type="hidden" name="id" value="@tag.Id" />
-                        <button type="submit" class="btn btn-danger btn-sm">Edit</button>
                     </form>
                 </td>
             </tr>
