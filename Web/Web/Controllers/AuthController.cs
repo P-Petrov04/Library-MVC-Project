@@ -103,34 +103,6 @@ namespace Web.Controllers
             return RedirectToAction("UserList");
         }
 
-
-        // POST: Delete User
-        [HttpPost]
-        public IActionResult DeleteUser(int id)
-        {
-            var users = _usersRepo.GetAll().ToList();
-            var userToRemove = users.FirstOrDefault(u => u.Id == id);
-            if (userToRemove != null)
-            {
-                users.Remove(userToRemove);
-
-                // Re-save all users except the removed one
-                foreach (var user in users)
-                {
-                    _usersRepo.Update(user);
-                }
-
-                TempData["Success"] = "User deleted successfully.";
-            }
-            else
-            {
-                TempData["Error"] = "User not found.";
-            }
-
-            return RedirectToAction("UserList");
-        }
-
-
         // GET: Login Page
         [HttpGet]
         public IActionResult Login(string url = "/Home/Index")

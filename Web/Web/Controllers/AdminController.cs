@@ -117,7 +117,7 @@ namespace Web.Controllers
             if (item != null)
                 _usersRepo.Delete(item);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("UserList", "Auth");
         }
     }
 }

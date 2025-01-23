@@ -57,6 +57,34 @@ namespace Web.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> AddCategory(AddCategoryVM model)
+        {
+            if (!IsAuthorized())
+            {
+                return UnauthorizedRedirect();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if(_categoryRepo.GetAll().Any(c => c.Name.ToLower().Equals(model.Name.ToLower())))
+            {
+                TempData["Error"] = $"This '{model.Name}' already exists.";
+                return RedirectToAction("AddCategory");
+            }
+
+            Category cat = new Category();
+            cat.Name = model.Name;
+
+            _categoryRepo.Add(cat);
+            TempData["Success"] = $"Category '{cat.Name}' added successfully!";
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             if (!IsAuthorized())
