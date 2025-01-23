@@ -1,147 +1,81 @@
 ﻿/* Navbar */
 .navbar {
-    height: 60px; /* Adjust height to match footer */
-    padding-top: 0.5rem; /* Add padding for better spacing */
-    padding-bottom: 0.5rem;
-    display: flex;
-    align-items: center; /* Align items vertically */
-    border-bottom: none !important; /* Remove unnecessary borders */
     background-color: #212529 !important; /* Dark background */
+    border-bottom: none; /* Remove bottom border */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
-/* Navbar Links Styling */
+/* Navbar Brand */
+.navbar-brand {
+    color: #f8f9fa !important; /* White text */
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+    .navbar-brand:hover {
+        color: #007bff !important; /* Blue hover */
+    }
+
+/* Navbar Links */
 .navbar-nav .nav-link {
-    color: #e9ecef !important; /* Light text color */
-    font-size: 1rem; /* Adjust font size */
+    color: #e9ecef !important; /* Light text */
+    font-size: 1rem;
     font-weight: 500;
-    padding: 0.5rem 1rem; /* Add spacing for better click area */
-    transition: color 0.3s ease;
+    padding: 0.5rem 1rem;
 }
 
     .navbar-nav .nav-link:hover {
-        color: #0d6efd !important; /* Blue hover color */
-        text-decoration: underline;
+        color: #0d6efd !important; /* Primary blue on hover */
     }
 
+/* Navbar Collapse */
+.navbar-collapse {
+    background-color: #212529; /* Same as navbar */
+    z-index: 1050; /* Ensure it overlays other content */
+    padding: 1rem 0;
+}
 
-    .navbar a.navbar-brand {
-        color: #f8f9fa; /* White color for the brand */
-        text-transform: uppercase;
-        font-weight: bold;
+@media (max-width: 768px) {
+    .navbar-collapse {
+        position: absolute;
+        top: 60px; /* Ensure it sits below the navbar */
+        left: 0;
+        width: 100%; /* Full width on mobile */
     }
 
-        .navbar a.navbar-brand:hover {
-            color: #007bff; /* Blue hover effect for the brand */
-        }
+    .navbar-nav {
+        flex-direction: column; /* Stack items vertically */
+        align-items: center;
+    }
+}
 
- 
-
+/* Navbar Toggler */
 .navbar-toggler {
-    border-color: #007bff; /* Blue toggle button */
+    border: 1px solid #007bff; /* Blue border */
+    background-color: #f8f9fa; /* Light toggler */
 }
 
 .navbar-toggler-icon {
-    background-color: #f8f9fa; /* White icon for the toggler */
+    background-image: url("data:image/svg+xml;charset=UTF8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba%28255,255,255,1%29' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 }
-
-/* Ensure Responsiveness */
-@media (max-width: 768px) {
-    .navbar .navbar-nav {
-        text-align: center; /* Center-align links on small screens */
-    }
-}
-
-
-.navbar {
-    margin-bottom: 0;
-    border: none; /* Remove border-bottom to avoid white line */
-}
-
-/* Optional: Add a subtle shadow to navbar for better separation */
-.navbar {
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
 
 /* Footer */
 footer {
-    height: 60px; /* Match footer size to header */
-    background-color: #212529; /* Consistent dark background */
-    color: #e9ecef; /* Light text color */
+    height: 60px;
+    background-color: #212529; /* Match navbar background */
+    color: #e9ecef; /* Light text */
     padding: 0.5rem 1rem;
     display: flex;
-    justify-content: space-between; /* Align content */
+    justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap; /* Handle smaller screens */
+    flex-wrap: wrap;
 }
 
     footer a {
-        color: #e9ecef; /* Default footer link color */
+        color: #e9ecef;
         text-decoration: none;
-        transition: color 0.3s ease;
     }
 
-      
-        footer a:hover, footer a.hover-link:hover {
-            color: #007bff; /* Blue hover effect for links */
-            text-decoration: underline;
+        footer a:hover {
+            color: #0d6efd;
         }
-
-    footer ul {
-        list-style: none;
-        padding: 0;
-    }
-
-    footer p {
-        margin: 0;
-        font-size: 0.9rem;
-    }
-
-    footer ul li {
-        display: inline;
-        margin-right: 1.5rem;
-    }
-
-/* For Small Screens */
-@media (max-width: 576px) {
-    footer .d-flex {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    footer ul {
-        margin-top: 1rem;
-        justify-content: center;
-    }
-}
-
-
-.navbar-nav .nav-link:hover,
-.footer a:hover {
-    color: #0d6efd !important; /* Bootstrap primary blue */
-    text-decoration: underline; /* Optional for better UX */
-}
-
-/* Footer-specific Links */
-.footer a {
-    color: #e9ecef; /* Light color to contrast with dark background */
-    text-decoration: none; /* Default state */
-}
-
-
-/* Navbar Links Hover Effect */
-.navbar-nav .nav-link:hover {
-    color: #0d6efd !important; /* Primary blue for hover */
-    text-decoration: underline !important; /* Add underline for clarity */
-}
-
-/* Footer Links Hover Effect */
-footer a {
-    color: #e9ecef; /* Default light color for links in the footer */
-    text-decoration: none; /* No underline by default */
-}
-
-    footer a:hover {
-        color: #0d6efd !important; /* Hover effect - primary blue */
-        text-decoration: underline !important;
-    }

@@ -22,12 +22,12 @@ namespace Web
                 .AddDefaultTokenProviders();
 
             // Register Repositories
-            builder.Services.AddScoped(typeof(BaseRepository<>)); // Register the generic repository
+            builder.Services.AddScoped(typeof(BaseRepository<>)); 
 
             // Add MVC, Sessions, and other services
             builder.Services.AddControllersWithViews();
             builder.Services.AddDistributedMemoryCache();
-            builder.Services.AddHttpContextAccessor(); // Needed for session handling
+            builder.Services.AddHttpContextAccessor(); 
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             builder.Services.AddSession(options =>

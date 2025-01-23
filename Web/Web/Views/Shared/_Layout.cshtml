@@ -16,14 +16,19 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-dark bg-dark border-bottom">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
             <div class="container-fluid">
                 <a class="navbar-brand fw-bold text-uppercase" asp-area="" asp-controller="Home" asp-action="Index">PULib</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarCollapse"
+                        aria-controls="navbarCollapse"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div id="navbarCollapse" class="navbar-collapse collapse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
@@ -48,13 +53,7 @@
                                 <span class="nav-link text-light">Welcome, @loggedUserName</span>
                             </li>
 
-                            @if (userRole == 1)
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-light" asp-controller="Admin" asp-action="Index">Dashboard</a>
-                                </li>
-                            }
-                            @if (userRole == 2)
+                            @if (userRole == 1 || userRole == 2)
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-light" asp-controller="Admin" asp-action="Index">Dashboard</a>
@@ -69,7 +68,6 @@
                             <li class="nav-item">
                                 <a class="nav-link text-light" asp-controller="Auth" asp-action="Logout">Logout</a>
                             </li>
-
                         }
                         else
                         {
