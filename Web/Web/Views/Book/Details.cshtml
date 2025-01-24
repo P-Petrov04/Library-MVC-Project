@@ -1,4 +1,5 @@
 ﻿@model dynamic
+@inject IHttpContextAccessor ContextAccessor
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -169,7 +170,7 @@
                                 <strong>Rating:</strong> @review.Rating / 5<br />
                                 
                                 <strong>Comment:</strong> @review.Comment
-                                @if (ViewBag.UserRole == 1 || ViewBag.UserRole == 3 || ViewBag.UserRole == 2 || (ViewBag.UserId != null && review.UserId == int.Parse(ViewBag.UserId)))
+                                @if (ViewBag.UserRole == 1 || ViewBag.UserRole == 2)
                                 {
                                     <form method="post" asp-action="DeleteReview" asp-controller="Book" class="d-inline-block ms-3">
                                         <input type="hidden" name="ReviewId" value="@review.Id" />
