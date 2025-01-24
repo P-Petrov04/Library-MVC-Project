@@ -18,7 +18,7 @@ namespace Web.Controllers
         private bool IsAuthorized()
         {
             var userRole = HttpContext.Session.GetInt32("UserRole");
-            return userRole == 1 || userRole == 2; // Admin (1) or Moderator (2)
+            return userRole == 1 || userRole == 2; 
         }
 
         private IActionResult UnauthorizedRedirect()
@@ -68,14 +68,14 @@ namespace Web.Controllers
                 return View(model);
             }
 
-            // Check if author exists
+            
             if (_authorRepo.FirstOrDefault(a => a.Name.Equals(model.Name)) != null)
             {
                 TempData["Error"] = $"The author '{model.Name}' already exists.";
                 return RedirectToAction("AddAuthor");
             }
 
-            // Add new author
+            
             Author author = new Author
             {
                 Name = model.Name,
@@ -154,7 +154,7 @@ namespace Web.Controllers
                 return NotFound();
             }
 
-            // Update author details
+            
             author.Name = model.Name;
             author.Bio = model.Bio;
             _authorRepo.Update(author);

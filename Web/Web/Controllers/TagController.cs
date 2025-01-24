@@ -19,7 +19,7 @@ namespace Web.Controllers
         private bool IsAuthorized()
         {
             var userRole = HttpContext.Session.GetInt32("UserRole");
-            return userRole == 1 || userRole == 2; // Admin (1) or Moderator (2)
+            return userRole == 1 || userRole == 2; 
         }
 
         private IActionResult UnauthorizedRedirect()
@@ -69,14 +69,12 @@ namespace Web.Controllers
 
             Tag tag = new Tag();
 
-            // Check if a tag with the same name already exists
             if (_tagRepo.FirstOrDefault(t => t.Name.ToLower() == model.Name.ToLower()) != null)
             {
                 TempData["Error"] = $"This '{model.Name}' already exists.";
                 return RedirectToAction("AddTag");
             }
 
-            // Check if the category exists
             var category = _categoryRepo.FirstOrDefault(c => c.Name.ToLower() == model.Category.ToLower());
             if (category == null)
             {

@@ -53,7 +53,7 @@ namespace Web.Controllers
         private bool IsAuthorized()
         {
             var userRole = HttpContext.Session.GetInt32("UserRole");
-            return userRole == 1 || userRole == 2; // Admin (1) or Moderator (2)
+            return userRole == 1 || userRole == 2; 
         }
 
         private IActionResult UnauthorizedRedirect()
@@ -66,7 +66,7 @@ namespace Web.Controllers
         [HttpPost]
         public IActionResult AddReview(int bookId, string comment, int rating)
         {
-            // Get the logged-in user's ID and username from the session
+            
             var userId = HttpContext.Session.GetString("loggedUserId");
 
             if (string.IsNullOrEmpty(userId))
@@ -145,7 +145,7 @@ namespace Web.Controllers
 
         private bool IsAuthorizedToDelete(int? userRole)
         {
-            return userRole == 1 || userRole == 2; // Admin (1) or Moderator (2)
+            return userRole == 1 || userRole == 2; 
         }
 
         public IActionResult Books(string search, string filterBy, string statusFilter)
@@ -220,7 +220,7 @@ namespace Web.Controllers
 
             if (lastLoan == null || lastLoan.ReturnDate == null || lastLoan.ReturnDate.ToString() == "N/A")
             {
-                return false; // Assuming that if ReturnDate is "N/A", the book is unavailable.
+                return false; 
             }
 
             return lastLoan.ReturnDate >= DateTime.Today;
@@ -245,7 +245,7 @@ namespace Web.Controllers
                 r.Id,
                 r.Comment,
                 r.Rating,
-                UserName = GetUserNameById(r.UserId) // Fetch username for each review
+                UserName = GetUserNameById(r.UserId) 
             })
             .ToList();
 
@@ -294,7 +294,6 @@ namespace Web.Controllers
 
         private string GetUserNameById(int userId)
         {
-            // Fetch the username from the user repository or database
             var user = _userRepo.FirstOrDefault(u => u.Id == userId);
             return user != null ? user.Name : "Unknown User";
         }
@@ -348,7 +347,6 @@ namespace Web.Controllers
             string? fileName = null;
             if (model.CoverImage != null && model.CoverImage.Length > 0)
             {
-                // Handle image upload logic
                 try
                 {
                     string[] permittedExtensions = { ".jpg", ".jpeg", ".png", ".gif" };
@@ -414,7 +412,6 @@ namespace Web.Controllers
             return RedirectToAction("Index");
         }
 
-        // Other actions like EditBook, DeleteBook follow a similar pattern...
 
         [HttpGet]
         public IActionResult EditBook(int id)
@@ -572,24 +569,20 @@ namespace Web.Controllers
 
             try
             {
-                // Delete related authors
                 var bookAuthors = _bookAuthorRepo.GetAll().Where(ba => ba.BookId == id).ToList();
                 foreach (var bookAuthor in bookAuthors)
                 {
                     _bookAuthorRepo.Delete(bookAuthor);
                 }
 
-                // Delete related categories
                 var bookCategories = _bookCategoryRepo.GetAll().Where(bc => bc.BookId == id).ToList();
                 foreach (var bookCategory in bookCategories)
                 {
                     _bookCategoryRepo.Delete(bookCategory);
                 }
 
-                // Delete the book
                 _bookRepo.Delete(book);
 
-                // Optionally delete the cover image from the file system
                 if (!string.IsNullOrEmpty(book.CoverImagePath))
                 {
                     string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", book.CoverImagePath);

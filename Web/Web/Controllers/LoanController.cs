@@ -24,7 +24,7 @@ namespace Web.Controllers
         private bool IsAuthorized()
         {
             var userRole = HttpContext.Session.GetInt32("UserRole");
-            return userRole == 1 || userRole == 2; // Admin (1) or Moderator (2)
+            return userRole == 1 || userRole == 2; 
         }
 
         private IActionResult UnauthorizedRedirect()
@@ -42,7 +42,7 @@ namespace Web.Controllers
 
             var loans = _loanRepo.GetAll()
                                  .OrderBy(l => l.ReturnDate.HasValue)
-                                 .ThenByDescending(l => l.LoanDate); // Newer loans first within each status group
+                                 .ThenByDescending(l => l.LoanDate); 
 
             var model = new LoanVM
             {
@@ -55,18 +55,16 @@ namespace Web.Controllers
 
         public IActionResult CurrentUserLoans()
         {
-            // Get the logged-in user's ID from the session or authentication
             var loggedUserId = HttpContext.Session.GetString("loggedUserId");
 
             if (string.IsNullOrEmpty(loggedUserId))
             {
                 TempData["Error"] = "You need to log in to view your loans.";
-                return RedirectToAction("Index", "Home"); // Redirect to home or login page
+                return RedirectToAction("Index", "Home"); 
             }
 
             int userId = int.Parse(loggedUserId);
 
-            // Retrieve loans for the logged-in user
             var userLoans = _loanRepo.GetAll()
                 .Where(l => l.UserId == userId);
 
@@ -96,12 +94,11 @@ namespace Web.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
-            // Check if the book is available in the selected period
             var isBookAvailable = !_loanRepo.GetAll().Any(loan =>
                 loan.BookId == bookId &&
                 (
-                    (loan.ReturnDate == null && loan.LoanDate <= dueDate && loan.DueDate >= loanDate) || // Active loan conflicts
-                    (loan.ReturnDate != null && loan.LoanDate <= dueDate && loan.ReturnDate >= loanDate) // Overlapping loan period
+                    (loan.ReturnDate == null && loan.LoanDate <= dueDate && loan.DueDate >= loanDate) || 
+                    (loan.ReturnDate != null && loan.LoanDate <= dueDate && loan.ReturnDate >= loanDate) 
                 ));
 
             if (!isBookAvailable)
@@ -110,7 +107,6 @@ namespace Web.Controllers
                 return RedirectToAction("Details", "Book", new { id = bookId });
             }
 
-            // Create a new loan
             var newLoan = new Loan
             {
                 BookId = bookId,

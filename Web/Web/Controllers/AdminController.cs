@@ -22,15 +22,15 @@ namespace Web.Controllers
         {
             var userRole = HttpContext.Session.GetInt32("UserRole");
 
-            // Assuming RoleId = 1 corresponds to Admin
-            return userRole != null && (userRole == 1 || userRole == 2); // Adjust RoleId if necessary
+            
+            return userRole != null && (userRole == 1 || userRole == 2); 
         }
         private bool IsAuthorizedAdmin()
         {
             var userRole = HttpContext.Session.GetInt32("UserRole");
 
-            // Assuming RoleId = 1 corresponds to Admin
-            return userRole != null && userRole == 1; // Adjust RoleId if necessary
+            
+            return userRole != null && userRole == 1; 
         }
 
         // GET: Admin Dashboard
@@ -47,7 +47,7 @@ namespace Web.Controllers
                 Items = _usersRepo.GetAll()
             };
 
-            return View(model); // Pass list of users to the view
+            return View(model); 
         }
 
         // GET: Register User/Moderator Page
@@ -78,7 +78,7 @@ namespace Web.Controllers
 
             User item = new User();
 
-            // Ensure the role exists
+            
             if (!model.Role.Equals("Admin") && !model.Role.Equals("Moderator") &&
                 !model.Role.Equals("Member"))
             {
@@ -86,7 +86,7 @@ namespace Web.Controllers
                 return RedirectToAction("RegisterUser");
             }
 
-            // Create the user
+            
             item.Email = model.Email;
             item.Name = model.Name;
             item.Password = model.Password;

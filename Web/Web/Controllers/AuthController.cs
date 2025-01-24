@@ -39,7 +39,7 @@ namespace Web.Controllers
 
         private bool IsAdmin()
         {
-            return HttpContext.Session.GetInt32("UserRole") == 1; // Assuming 1 is the Admin RoleId
+            return HttpContext.Session.GetInt32("UserRole") == 1; 
         }
 
         // GET: Edit User
@@ -139,7 +139,7 @@ namespace Web.Controllers
                 return View(model);
             }
 
-            // Set session values
+            
             HttpContext.Session.SetString("loggedUserId", loggedUser.Id.ToString());
             HttpContext.Session.SetString("UserEmail", loggedUser.Email);
             HttpContext.Session.SetString("UserName", loggedUser.Name);
@@ -202,7 +202,7 @@ namespace Web.Controllers
                 return View(model);
             }
 
-            // Update user information
+            
             if (!string.IsNullOrWhiteSpace(model.Name))
             {
                 dbUser.Name = model.Name;

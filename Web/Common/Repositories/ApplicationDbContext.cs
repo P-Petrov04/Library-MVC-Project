@@ -7,7 +7,7 @@ namespace Common.Repositories
     public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options) // Pass options to the base class
+            : base(options) 
         {
         }
 
@@ -27,7 +27,7 @@ namespace Common.Repositories
         {
             base.OnModelCreating(modelBuilder);
 
-            // Relationships and seed data (already present in your code)
+            
             modelBuilder.Entity<BookAuthor>()
                 .HasKey(ba => new { ba.BookId, ba.AuthorId });
 

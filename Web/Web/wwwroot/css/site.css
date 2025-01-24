@@ -3,6 +3,11 @@ html {
     font-size: 97%; /* Scale everything to 97% of the default size */
 }
 
+<head >
+    <link rel="icon" href="logosn.png" type="image/png" >
+</head >
+
+
 body {
     margin-bottom: 60px;
     height: 100%;

@@ -22,7 +22,7 @@ namespace Web.Controllers
         private bool IsAuthorized()
         {
             var userRole = HttpContext.Session.GetInt32("UserRole");
-            return userRole == 1 || userRole == 2; // Admin (1) or Moderator (2)
+            return userRole == 1 || userRole == 2; 
         }
 
         private IActionResult UnauthorizedRedirect()
@@ -97,7 +97,6 @@ namespace Web.Controllers
 
             if (item != null)
             {
-                // Delete all associated tags
                 foreach (var tag in _tagRepo.GetAll().Where(t => t.CategoryId == item.Id))
                 {
                     _tagRepo.Delete(tag);
